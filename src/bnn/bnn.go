@@ -15,6 +15,12 @@ limitations under the License.
 
 package bnn
 
+	
+import (
+    "os"
+)
+
+
 type neuron struct {
     //activation function
     act string
@@ -22,6 +28,30 @@ type neuron struct {
     inps, outs int
 }
 
+//reads in images located in 'path' and returns an array 
+func ReadImage(path string) []byte{
+
+   //open the image file
+   f, err := os.Open(path)
+   if err != nil {
+        panic(err)
+   }
+
+   //get the file status
+   fi, err := f.Stat()
+   if err != nil {
+       panic(err)
+   }
+
+   //create an arraye of size 'image'
+   arr := make([]byte, fi.Size())
+   f.Read(arr)
+
+   f.Close()
+   return arr
+}
+
+//constructs a layer of neurons with arbitrary 'size' and 'activation' functions
 func NetworkLayer(size int, act string) []neuron{
 
   layer := make([]neuron, size)
@@ -36,4 +66,5 @@ func NetworkLayer(size int, act string) []neuron{
 
   return layer
 }
+
 

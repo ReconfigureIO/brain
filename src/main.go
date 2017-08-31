@@ -19,6 +19,13 @@ import "fmt"
 import "bnn"
 
 func main() {
+
+  //create a layer with 2 neurons and 'relu' activations 
   layer1 := bnn.NetworkLayer(2,"relu")
   fmt.Println(layer1[1])
+
+  //load image 
+  image := bnn.ReadImage("data")
+  fmt.Println(image)
+
 }
