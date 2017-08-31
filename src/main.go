@@ -40,10 +40,10 @@ func main() {
 
   //train network and return accuracy
   //FIXME add initial weight and bias distribution
-//  weights, acc := bnn.TrainNetwork(nw_image, test, layers)
-//  fmt.Println(acc)
+  weights, acc := bnn.TrainNetwork(nw_image, test, layers)
+  fmt.Println(acc)
   
   //inference uses the updated weights, and finally returns an array with outputs 
-//  output := bnn.Inference(weights, input, layers)
-//  fmt.Println(output)
+  output := bnn.Inference(weights, input, layers)
+  fmt.Println(output)
 }
