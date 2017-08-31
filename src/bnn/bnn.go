@@ -28,6 +28,16 @@ type neuron struct {
     inps, outs int
 }
 
+//reshapes images based on the resize factors should support:
+//padding, flipping, rotation, transpose, etc.
+//FIXME resize to be implemented as a struct wrt alignment factors
+//FIXME implement it as a separate package 
+func ReshapeImage(image []byte) []byte{
+ return image
+}
+
+
+
 //reads in images located in 'path' and returns an array 
 func ReadImage(path string) []byte{
 

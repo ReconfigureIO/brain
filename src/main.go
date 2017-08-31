@@ -28,4 +28,7 @@ func main() {
   image := bnn.ReadImage("data")
   fmt.Println(image)
 
+  //reshape image
+  nw_image:= bnn.ReshapeImage(image)
+  fmt.Println(nw_image)
 }
