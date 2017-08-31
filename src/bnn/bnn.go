@@ -20,21 +20,29 @@ import (
     "os"
 )
 
-type neuron struct {
+type Neuron struct {
     //activation function
     act string
     //no of inputs and outputs per neuron
     inps, outs int
 }
 
-
+//inference takes an input image and uses the weights from training  
+//FIXME add bias
+//FIXME pass array of layers  
+func Inference(weights []float32, input []byte, layers [][]Neuron){// []byte{
+ 
+// output = input * layers * weights
+// return output
+}
 
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
 //FIXME add bias and weight distributions as input 
-func TrainNetwork(image []byte, test []byte, layers []neuron) float32{
- 
- return accuracy
+func TrainNetwork(image []byte, test []byte, layers [][]Neuron){// ([][]float32, float32){
+  
+//   compute weights
+// return weights, accuracy
 }
 
 //reshapes images based on the resize factors should support:
@@ -69,9 +77,9 @@ func ReadImage(path string) []byte{
 }
 
 //constructs a layer of neurons with arbitrary 'size' and 'activation' functions
-func NetworkLayer(size int, act string) []neuron{
+func NetworkLayer(size int, act string) []Neuron{
 
-  layer := make([]neuron, size)
+  layer := make([]Neuron, size)
 
   //init the array
   for i, _:= range layer {
