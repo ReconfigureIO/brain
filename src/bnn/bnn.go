@@ -18,6 +18,7 @@ package bnn
 	
 import (
     "os"
+    "math/rand"
 )
 
 type Neuron struct {
@@ -30,19 +31,21 @@ type Neuron struct {
 //inference takes an input image and uses the weights from training  
 //FIXME add bias
 //FIXME pass array of layers  
-func Inference(weights []float32, input []byte, layers [][]Neuron){// []byte{
+func Inference(weights []float32, input []byte, layers [][]Neuron) []byte{
  
-// output = input * layers * weights
-// return output
+ output = input * layers * weights
+ return output
 }
 
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
 //FIXME add bias and weight distributions as input 
-func TrainNetwork(image []byte, test []byte, layers [][]Neuron){// ([][]float32, float32){
+func TrainNetwork(image []byte, test []byte, layers [][]Neuron) ([][]float32, float32){
   
-//   compute weights
-// return weights, accuracy
+ var accuracy float32
+ var weights [][]float32
+
+ return weights, accuracy
 }
 
 //reshapes images based on the resize factors should support:
