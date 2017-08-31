@@ -20,12 +20,21 @@ import (
     "os"
 )
 
-
 type neuron struct {
     //activation function
     act string
     //no of inputs and outputs per neuron
     inps, outs int
+}
+
+
+
+//trains the network of layers based on the input batches
+//compares the output based on the test in the dataset 
+//FIXME add bias and weight distributions as input 
+func TrainNetwork(image []byte, test []byte, layers []neuron) float32{
+ 
+ return accuracy
 }
 
 //reshapes images based on the resize factors should support:
@@ -35,8 +44,6 @@ type neuron struct {
 func ReshapeImage(image []byte) []byte{
  return image
 }
-
-
 
 //reads in images located in 'path' and returns an array 
 func ReadImage(path string) []byte{

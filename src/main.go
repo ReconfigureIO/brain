@@ -21,14 +21,24 @@ import "bnn"
 func main() {
 
   //create a layer with 2 neurons and 'relu' activations 
-  layer1 := bnn.NetworkLayer(2,"relu")
+  layers := bnn.NetworkLayer(2,"relu")
   fmt.Println(layer1[1])
 
   //load image 
-  image := bnn.ReadImage("data")
+  image := bnn.ReadImage("dataset")
   fmt.Println(image)
 
-  //reshape image
+  //load validations 
+  test := bnn.ReadImage("dataset")
+  fmt.Println(test)
+
+  //reshape image 
   nw_image:= bnn.ReshapeImage(image)
   fmt.Println(nw_image)
+
+  //train network and return accuracy
+  //FIXME add initial weight and bias distribution
+  weights, acc := bnn.TrainNetwork(nw_image, test, layers)
+  fmt.Println(acc)
+
 }
