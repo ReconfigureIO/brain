@@ -17,15 +17,22 @@ package main
 
 import "fmt"
 import "bnn"
+import "math/rand"
+
+const INP_LAYER_SIZE int = 2
+const HID_LAYER_SIZE int = 3
+const OUT_LAYER_SIZE int = 2
 
 func main() {
 
-  //create a layer with 2 neurons and 'relu' activations 
-  layer1 := bnn.NetworkLayer(2,"relu")
-  layer2 := bnn.NetworkLayer(3,"sig")
-  layers := [][]bnn.Neuron{layer1, layer2}
-  fmt.Println(layers)
+  //build a network with 3 layers of input, hidden, and output
+  layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"sig")
+  layer_hidden := bnn.NetworkLayer(HID_LAYER_SIZE,"sig")
+  layer_out := bnn.NetworkLayer(OUT_LAYER_SIZE,"relu")
 
+  network := [][]bnn.Neuron{layer_in, layer_hidden, layer_out}
+  fmt.Println(network)
+   
   //load image 
   image := bnn.ReadImage("dataset")
   fmt.Println(image)
@@ -40,10 +47,10 @@ func main() {
 
   //train network and return accuracy
   //FIXME add initial weight and bias distribution
-  weights, acc := bnn.TrainNetwork(nw_image, test, layers)
+  weights, acc := bnn.TrainNetwork(nw_image, test, network)
   fmt.Println(acc)
   
   //inference uses the updated weights, and finally returns an array with outputs 
-  output := bnn.Inference(weights, input, layers)
+  output := bnn.Inference(weights, input, network)
   fmt.Println(output)
 }
