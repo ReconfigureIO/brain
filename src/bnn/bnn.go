@@ -29,6 +29,7 @@ type Synapse struct {
 }
 
 //FIXME calculate deltas locally per neuron for BP
+//TODO Inputs and Outputs useful for a sparse net
 type Neuron struct {
     //activation function
     Activation  string
@@ -50,13 +51,29 @@ type Neuron struct {
 
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
-//FIXME add bias and weight distributions as input 
-//FIXME pass a pointer to the network
-func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]float32, float32){
+//TODO add bias and weight distributions as input 
+//TODO pass a pointer to the network
+func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, float32){
 
- var accuracy float32
- var weights [][]float32
+   var accuracy float32
+   var weights [][]Synapse
 
+   //TODO initialise weights using a random function
+
+   //calculate deltas per neuron
+   for i := len(network); i >= 0; i-- {
+     for j, _ := range network {
+
+       var acc float32 = 0
+       for k, _ := range network {
+        acc += weights[i+1][k].Weight * network[i][j].DeltaTemp
+       }
+       network[i][j].DeltaTemp =  acc
+     }
+   } 
+
+   //TODO update weights per neuron based on delats
+   return weights, accuracy
 }
 
 //reshapes images based on the resize factors should support:
@@ -64,7 +81,7 @@ func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]float32, f
 //FIXME resize to be implemented as a struct wrt alignment factors
 //FIXME implement it as a separate package 
 func ReshapeImage(image []byte) []byte{
- return image
+   return image
 }
 
 //reads in images located in 'path' and returns an array 
@@ -98,10 +115,7 @@ func NetworkLayer(size int, act string) []Neuron{
   //init the array
   for i, _:= range layer {
 
-    layer[i].act = act
-    layer[i].inps = 0
-    layer[i].outs = 0
+    layer[i].Activation = act
   }
-
   return layer
 }
