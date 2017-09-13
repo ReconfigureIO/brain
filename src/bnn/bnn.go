@@ -15,24 +15,35 @@ limitations under the License.
 
 package bnn
 
-	
 import (
     "os"
 //    "math/rand"
 )
 
+//essentially a link connecting neurons 
+type Synapse struct {
+    //weight associated with the synapse
+    Weight      float32
+    //no of the input/output neuron
+    In, Out     int
+}
+
+//FIXME calculate deltas locally per neuron for BP
 type Neuron struct {
     //activation function
-    act string
+    Activation  string
     //no of inputs and outputs per neuron
-    inps, outs int
+    Inps, Outs  []int
+    //for calculating deltas
+    DeltaTemp   float32
+    //neuron's output
+    OutVal      float32
 }
 
 //inference takes an input image and uses the weights from training  
 //FIXME add bias
 //FIXME pass array of layers  
 //func Inference(weights []float32, input []byte, layers [][]Neuron) []byte{
- 
 // output = input * layers * weights
 // return output
 //}
@@ -40,12 +51,12 @@ type Neuron struct {
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
 //FIXME add bias and weight distributions as input 
-func TrainNetwork(image []byte, test []byte, layers [][]Neuron) ([][]float32, float32){
-  
+//FIXME pass a pointer to the network
+func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]float32, float32){
+
  var accuracy float32
  var weights [][]float32
 
- return weights, accuracy
 }
 
 //reshapes images based on the resize factors should support:
@@ -94,5 +105,3 @@ func NetworkLayer(size int, act string) []Neuron{
 
   return layer
 }
-
-
