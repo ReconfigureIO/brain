@@ -72,7 +72,13 @@ func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, f
      }
    } 
 
-   //TODO update weights per neuron based on delats
+   //calculate new weights and update
+   for i, layer := range network {
+     for j, neuron := range layer {
+        weights[i][j].Weight += weights[i][j].Weight * neuron.OutVal
+     }
+   }
+
    return weights, accuracy
 }
 
