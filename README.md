@@ -20,6 +20,8 @@ Implementation wise the following assumptions are made wrt the network (for now)
 
 First off install the base package from GoLearn which is used for data augmentation etc.
 ```bash
+   uzip ./src/datasets/*.zip && rm ./src/datasets/*.zip 
+   
    go get -t -u -v github.com/sjwhitworth/golearn/base
 ```
 
