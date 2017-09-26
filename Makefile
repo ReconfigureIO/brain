@@ -1,10 +1,7 @@
-test: test_network test_bnn
+test: test_bnn
 
 test_bnn:
-	@( go test ./bnn/ )
-
-test_network:
-	@( go test )
+	@( go test ./src/bnn/ )
 
 goget:
 	@( \
