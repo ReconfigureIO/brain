@@ -35,6 +35,9 @@ func main() {
    }
    fmt.Println(rawData)
 
+  //cast rawdate to input var
+  var input [][]float32
+
   //build a network with 3 layers of input, hidden, and output
   layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"sig")
   layer_hidden := bnn.NetworkLayer(HID_LAYER_SIZE,"sig")
@@ -58,9 +61,9 @@ func main() {
   //train network and return accuracy
   //FIXME add initial weight and bias distribution
   weights, acc := bnn.TrainNetwork(nw_image, test, network)
-  fmt.Println(acc)
+  fmt.Println(acc, weights)
 
   //inference uses the updated weights, and finally returns an array with outputs 
-//  output := bnn.Inference(weights, input, network)
-//  fmt.Println(output)
+  output := bnn.Inference(weights, input, network)
+  fmt.Println(output)
 }

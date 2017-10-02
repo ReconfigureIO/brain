@@ -50,11 +50,34 @@ func ActivationFunction(x float64) float64{
 
 //inference takes an input image and uses the weights from training  
 //FIXME add bias
-//FIXME pass array of layers  
-//func Inference(weights []float32, input []byte, layers [][]Neuron) []byte{
-// output = input * layers * weights
-// return output
-//}
+//FIXME pass array of layers 
+func Inference(weights [][]Synapse, input [][]float32, network [][]Neuron) float32{
+
+   var output float32
+
+   //calculate out values for the first layer (i = 0)
+   for _, layer := range network {
+     for j, neuron := range layer {
+        neuron.OutVal += weights[0][j].Weight * input[0][j]
+     }
+   }
+
+   //use the weights to calculate the output of neurons in hidden layers
+   for i, layer := range network {
+     for j, neuron := range layer {
+        weights[i][j].Weight += weights[i][j].Weight * neuron.OutVal * input[i][j]
+     }
+   }
+
+   //use the weights to calculate the output of neurons in final layer (i = last)
+   i := len(network)
+   for _, layer := range network {
+     for j, neuron := range layer {
+        output += weights[i][j].Weight * neuron.OutVal * input[i][j]
+     }
+   }
+   return output
+}
 
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
