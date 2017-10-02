@@ -17,7 +17,7 @@ package bnn
 
 import (
     "os"
-//    "math/rand"
+    "math"
 )
 
 //essentially a link connecting neurons 
@@ -40,6 +40,13 @@ type Neuron struct {
     //neuron's output
     OutVal      float32
 }
+
+//TODO extend to support any activation type
+func ActivationFunction(x float64) float64{
+
+    return math.Max(0,x) 
+}
+
 
 //inference takes an input image and uses the weights from training  
 //FIXME add bias
