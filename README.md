@@ -20,9 +20,16 @@ Implementation wise the following assumptions are made wrt the network (for now)
 
 First off install the base package from GoLearn which is used for data augmentation etc.
 ```bash
+   export GOPATH=`dir`
+  
    uzip ./src/datasets/*.zip && rm ./src/datasets/*.zip 
    
    go get -t -u -v github.com/sjwhitworth/golearn/base
+
+   go get -t -u -v github.com/reconfigureio/brain/bnn
+
+   (Optional: utils package provides functions for loading datasets)
+   go get -t -u -v github.com/reconfigureio/brain/utils
 ```
 
 ## Getting Started
