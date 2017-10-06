@@ -16,10 +16,9 @@ limitations under the License.
 package main
 
 import "fmt"
-import "bnn"
+import "github.com/reconfigureio/brain/bnn"
+import "github.com/reconfigureio/brain/utils"
 //import "math/rand"
-
-import "github.com/sjwhitworth/golearn/base"
 
 
 const INP_LAYER_SIZE int = 2
@@ -28,16 +27,11 @@ const OUT_LAYER_SIZE int = 2
 
 func main() {
 
-   //read data from dataset 
-   rawData, err := base.ParseCSVToInstances("datasets/mnist_test.csv", false)
-   if err != nil {
-      panic(err)
-   }
-   fmt.Println(rawData)
-
   //cast rawdate to input var
   var input [][]float32
+  var fpath string
 
+  input = utils.load_data(fpath)
   //build a network with 3 layers of input, hidden, and output
   layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"sig")
   layer_hidden := bnn.NetworkLayer(HID_LAYER_SIZE,"sig")
