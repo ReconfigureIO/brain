@@ -79,6 +79,7 @@ func Inference(weights [][]Synapse, input [][]float32, network [][]Neuron) float
    return output
 }
 
+
 //trains the network of layers based on the input batches
 //compares the output based on the test in the dataset 
 //TODO add bias and weight distributions as input 

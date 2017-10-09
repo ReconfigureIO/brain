@@ -15,50 +15,59 @@ limitations under the License.
 
 package main
 
-import "fmt"
-import "github.com/reconfigureio/brain/bnn"
-import "github.com/reconfigureio/brain/utils"
-//import "math/rand"
+import (
+	"github.com/reconfigureio/brain/bnn"
+	"github.com/reconfigureio/brain/utils"
+)
 
 
 const INP_LAYER_SIZE int = 2
 const HID_LAYER_SIZE int = 3
 const OUT_LAYER_SIZE int = 2
 
-func main() {
+func TOP(
+	// The first set of arguments will be the ports for interacting with host 
+	output float32,
+	// The second set of arguments will be the ports for interacting with memory
+	memReadAddr chan<- axiprotocol.Addr,
+	memReadData <-chan axiprotocol.ReadData,
 
-  //cast rawdate to input var
-  var input [][]float32
-  var fpath string
+	memWriteAddr chan<- axiprotocol.Addr,
+	memWriteData chan<- axiprotocol.WriteData,
+	memWriteResp <-chan axiprotocol.WriteResp){
 
-  input = utils.load_data(fpath) 
+	//cast rawdate to input vars
+	training_data := [][]float32{
+    		{0, 0},
+    		{0, 1},
+		{1, 0},
+		{1, 1}
+	}
+	target_data := []float32{
+    		{0},
+    		{1},
+		{1},
+		{0}
+	}
+	test_data := [][]float32{
+    		{0, 1},
+    		{1, 1},
+		{1, 0},
+		{1, 1}
+	}
 
-  //build a network with 3 layers of input, hidden, and output
-  layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"sig")
-  layer_hidden := bnn.NetworkLayer(HID_LAYER_SIZE,"sig")
-  layer_out := bnn.NetworkLayer(OUT_LAYER_SIZE,"relu")
+	//build a network with 3 layers of input, hidden, and output
+	layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"relu")
+	layer_hidden := bnn.NetworkLayer(HID_LAYER_SIZE,"relu")
+	layer_out := bnn.NetworkLayer(OUT_LAYER_SIZE,"sig")
 
-  network := [][]bnn.Neuron{layer_in, layer_hidden, layer_out}
-  fmt.Println(network)
+	network := [][]bnn.Neuron{layer_in, layer_hidden, layer_out}
 
-  //load image 
-  image := bnn.ReadImage("dataset")
-  fmt.Println(image)
+	//train network and return accuracy
+	//FIXME add initial weight and bias distribution
+	weights, acc := bnn.TrainNetwork(training_data, target_data, network)
 
-  //load validations 
-  test := bnn.ReadImage("dataset")
-  fmt.Println(test)
+	//inference uses the updated weights, and finally returns an array with outputs 
+	output := bnn.Inference(weights, test_data, network)
 
-  //reshape image 
-  nw_image:= bnn.ReshapeImage(image)
-  fmt.Println(nw_image)
-
-  //train network and return accuracy
-  //FIXME add initial weight and bias distribution
-  weights, acc := bnn.TrainNetwork(nw_image, test, network)
-  fmt.Println(acc, weights)
-
-  //inference uses the updated weights, and finally returns an array with outputs 
-  output := bnn.Inference(weights, input, network)
-  fmt.Println(output)
 }
