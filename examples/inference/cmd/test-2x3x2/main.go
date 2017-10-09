@@ -7,6 +7,12 @@ import (
 	"github.com/reconfigureio/brain/utils"
 )
 
+//Partition example dataset based on BATCH_SIZE
+//NUM_EPOCHS is practical and may vary based on
+//the output accuracy achieved from the model    
+const NUM_EPOCHS int = 100
+const BATCH_SIZE int = 500
+
 func main() {
 	world := xcl.NewWorld()
 	defer world.Release()
