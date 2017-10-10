@@ -18,7 +18,9 @@ package main
 import (
 	"github.com/reconfigureio/brain/bnn"
 	"github.com/reconfigureio/brain/utils"
+	"github.com/Reconfigure.io/fixed"
 )
+
 
 
 const INP_LAYER_SIZE int = 2
@@ -27,7 +29,7 @@ const OUT_LAYER_SIZE int = 2
 
 func TOP(
 	// The first set of arguments will be the ports for interacting with host 
-	output float32,
+	output fixed.Int26_6,
 	// The second set of arguments will be the ports for interacting with memory
 	memReadAddr chan<- axiprotocol.Addr,
 	memReadData <-chan axiprotocol.ReadData,
@@ -37,24 +39,42 @@ func TOP(
 	memWriteResp <-chan axiprotocol.WriteResp){
 
 	//cast rawdate to input vars
-	training_data := [][]float32{
+	training_data := [][]bool{
     		{0, 0},
     		{0, 1},
 		{1, 0},
 		{1, 1}
 	}
-	target_data := []float32{
+	target_data := []bool{
     		{0},
     		{1},
 		{1},
 		{0}
 	}
-	test_data := [][]float32{
+	test_data := [][]bool{
     		{0, 1},
     		{1, 1},
 		{1, 0},
 		{1, 1}
 	}
+	//weights exported from xornet on Keras (epoch size = 500)
+	weights := [][]fixed.Int26_6{
+ 		{-0.35589939,
+       		  0.13612342,
+       		 -0.27676189,
+       		 -0.06193029,
+       		 -0.37450755,
+       		  0.48630142,
+       		  0.40621114,
+       		  0.11644399,
+       		 -0.33843306,
+       		  0.34775987,
+       		 -0.14313582,
+       		 -0.04034447,
+       		  0.54061526,
+       		 -0.42877936,
+       		  0.54952145,
+       		  0.19469711},{-0.08784658}}
 
 	//build a network with 3 layers of input, hidden, and output
 	layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"relu")
