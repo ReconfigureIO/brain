@@ -18,7 +18,7 @@ package main
 import (
 //	"github.com/reconfigureio/brain/bnn"
 //	"github.com/reconfigureio/brain/utils"
-//	"github.com/Reconfigure.io/fixed"
+	"github.com/reconfigureio/fixed"
 	"fmt"
 	"math"
 
@@ -32,7 +32,7 @@ const OUT_LAYER_SIZE int = 1
 //essentially a link connecting neurons 
 type Synapse struct {
     //weight associated with the synapse
-    Weight      float64
+    Weight      fixed.Int52_12
     //no of the input/output neuron
     In, Out     int
 }
@@ -44,11 +44,11 @@ type Neuron struct {
     //no of inputs and outputs per neuron
     Inps, Outs  []int
     //for calculating deltas
-    DeltaTemp   float64
+    DeltaTemp   fixed.Int52_12
     //neuron's output
-    OutVal      float64
+    OutVal      fixed.Int52_12
     //outVal= activation (outVal from previous layer * in_weights)  
-    In_wights   []float64
+    In_wights   []fixed.Int52_12
 }
 
 //constructs a layer of neurons with arbitrary 'size' and 'activation' functions
@@ -65,21 +65,21 @@ func NetworkLayer(size int, act string) []Neuron{
 }
 
 //TODO extend to support any activation type
-func Activations(act string, x float64) float64{
+func Activations(act string, x fixed.Int52_12) fixed.Int52_12{
 
    switch act{
      case "relu":
-	return math.Max(0,x) 
+	return fixed.I52(int64(math.Max(0,float64(x))))
      case "sig":
-        return x / (1 + math.Abs(x))
+        return fixed.I52(int64(float64(x)/(1 + math.Abs(float64(x)))))
 //1.0 / (1.0 + math.Exp(-x))
      default:
-	return float64(0)
+	return fixed.Int52_12(0)
    }
 }
 
 //TODO extend to support other activation' for BackPropagation
-func Activations_(act string, x float64) float64{
+func Activations_(act string, x fixed.Int52_12) fixed.Int52_12{
 
    switch act{
      case "relu":
@@ -87,14 +87,14 @@ func Activations_(act string, x float64) float64{
      case "sig":
         return x * (1.0 - x)
      default:
-	return float64(0)
+	return fixed.Int52_12(0)
    }
 }
 
 
 //inference takes an input image and uses the weights from training  
 //FIXME add bias
-func Inference(ptr *[][]Neuron, tdata []float64, weights [][]float64) float64{
+func Inference(ptr *[][]Neuron, tdata []fixed.Int52_12, weights [][]fixed.Int52_12) fixed.Int52_12{
 
    //Initialize the first layer
    for i, _ := range (*ptr)[0] {
@@ -111,7 +111,7 @@ func Inference(ptr *[][]Neuron, tdata []float64, weights [][]float64) float64{
    }
 
    //Calculate outval for the output layer
-   sum := float64(0)
+   sum := fixed.Int52_12(0)
    for i, _ := range (*ptr)[1] {
       sum += (*ptr)[1][i].OutVal
    }
@@ -135,30 +135,30 @@ func main(
 ){
 
 	//cast rawdate to input vars
-	training_data := [][]float64{
+	training_data := [][]fixed.Int52_12{
     		 {0, 0},
     		 {0, 1},
 		 {1, 0},
 		 {1, 1}}
-	target_data := []float64{
+	target_data := []fixed.Int52_12{
     		 0,
     		 1,
 		 1,
 		 0}
-	test_data := [][]float64{
+	test_data := [][]fixed.Int52_12{
     		 {0, 1},
     		 {1, 1},
 		 {1, 0},
 		 {0, 0}}
-	acc_data := []float64{
+	acc_data := []fixed.Int52_12{
     		 1,
     		 0,
 		 1,
 		 0}
 
 	//weights exported from xornet on KERAS (epoch size = 500 - sgd)
-/*	weights := [][]float64{
- 		[]float64{-0.35589939,
+/*	weights := [][]fixed.Int52_12{
+ 		[]fixed.Int52_12{-0.35589939,
        		  0.13612342,
        		 -0.27676189,
        		 -0.06193029,
@@ -173,26 +173,26 @@ func main(
        		  0.54061526,
        		 -0.42877936,
        		  0.54952145,
-       		  0.19469711},[]float64{-0.08784658}}*/
+       		  0.19469711},[]fixed.Int52_12{-0.08784658}}*/
 
 	//weights exported from xornet on KERAS (epoch size = 5000 - adam)
-	weights := [][]float64{
-		[]float64{0.1726144 ,
-		 -2.10709,
-       		0.43040475,
-	       -0.036798,
-       		-2.14761877,
-       		 1.65221334,
-       		-0.47918937,
-       		-2.28618431,
-      		 -1.64216483,
-       		 1.45400071,
-       		 0.08930543,
-       		-1.85224831,
-       		 1.3171016 ,
-     		  -1.74173605,
-       		-0.37978798,
-       		-2.09490085},[]float64{0.46938747}}
+	weights := [][]fixed.Int52_12{
+		[]fixed.Int52_12{fixed.I52F(0, 1726144),
+		 fixed.I52F(-2, 10709),
+       		 fixed.I52F(0, 43040475),
+	         fixed.I52F(-0, 36798), //?
+       		 fixed.I52F(-2 ,14761877),
+       		 fixed.I52F(1 ,65221334),
+       		 fixed.I52F(-0, 47918937),
+       		 fixed.I52F(-2 ,28618431),
+      		 fixed.I52F(-1, 64216483),
+       		 fixed.I52F(1, 45400071),
+       		 fixed.I52F(0, 8930543), //?
+       		 fixed.I52F(-1,85224831),
+       		 fixed.I52F(1,3171016),
+     		 fixed.I52F(-1,74173605),
+       		 fixed.I52F(-0,37978798),
+       		 fixed.I52F(-2,9490085)},[]fixed.Int52_12{fixed.I52F(0, 46938747)}} //09490085??
 
 	//build a network with 3 layers of input, hidden, and output
 	layer_in := NetworkLayer(INP_LAYER_SIZE,"na")
@@ -209,16 +209,14 @@ func main(
 	//train the network 
 	//FIXME add initial weight and bias distribution
 	//weights, acc := bnn.TrainNetwork(training_data, target_data, network)
-	loss := float64(0)
+	loss := fixed.Int52_12(0)
 	for i, _ := range test_data {
 		//Prediction/Inference based on the input test dataset 
 	        ret := Inference(&network, test_data[i], weights)
-		loss += math.Abs(ret  - acc_data[i]) 
+		loss += fixed.Int52_12(math.Abs(float64(ret  - acc_data[i]))) 
 	}
 
         //Output the Accuracy value to standard out.
 	acc := 100 * (1-loss/4)/1
-	fmt.Printf("Accuracy is : %F% \n\n", acc)
-
+	fmt.Printf("Accuracy is : %F% \n\n", float64(acc))
 }
-
