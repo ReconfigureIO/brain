@@ -16,9 +16,9 @@ limitations under the License.
 package main
 
 import (
-	"github.com/reconfigureio/brain/bnn"
-	"github.com/reconfigureio/brain/utils"
-	"github.com/Reconfigure.io/fixed"
+//	"github.com/reconfigureio/brain/bnn"
+//	"github.com/reconfigureio/brain/utils"
+//	"github.com/reconfigureio/fixed"
 )
 
 
@@ -29,7 +29,7 @@ const OUT_LAYER_SIZE int = 2
 
 func TOP(
 	// The first set of arguments will be the ports for interacting with host 
-	output fixed.Int26_6,
+	//output fixed.Int26_6,
 	// The second set of arguments will be the ports for interacting with memory
 	memReadAddr chan<- axiprotocol.Addr,
 	memReadData <-chan axiprotocol.ReadData,
@@ -40,25 +40,22 @@ func TOP(
 
 	//cast rawdate to input vars
 	training_data := [][]bool{
-    		{0, 0},
-    		{0, 1},
-		{1, 0},
-		{1, 1}
-	}
+    		[]bool{0, 0},
+    		[]bool{0, 1},
+		[]bool{1, 0},
+		[]bool{1, 1}}
 	target_data := []bool{
-    		{0},
-    		{1},
-		{1},
-		{0}
-	}
+    		0,
+    		1,
+		1,
+		0}
 	test_data := [][]bool{
-    		{0, 1},
-    		{1, 1},
-		{1, 0},
-		{1, 1}
-	}
+    		[]bool{0, 1},
+    		[]bool{1, 1},
+		[]bool{1, 0},
+		[]bool{1, 1}}
 	//weights exported from xornet on Keras (epoch size = 500)
-	weights := [][]fixed.Int26_6{
+	/*weights := [][]fixed.Int26_6{
  		{-0.35589939,
        		  0.13612342,
        		 -0.27676189,
@@ -74,7 +71,7 @@ func TOP(
        		  0.54061526,
        		 -0.42877936,
        		  0.54952145,
-       		  0.19469711},{-0.08784658}}
+       		  0.19469711},{-0.08784658}}*/
 
 	//build a network with 3 layers of input, hidden, and output
 	layer_in := bnn.NetworkLayer(INP_LAYER_SIZE,"relu")
