@@ -37,7 +37,8 @@ const HID_LAYER_SIZE int = 16
 const OUT_LAYER_SIZE int = 1
 
 func TOP(
-
+	a int64,
+	b int64,
 	addr uintptr,
 	// The first set of arguments will be the ports for interacting with host 
 	//output fixed.Int26_6,
@@ -62,7 +63,7 @@ func TOP(
 		 1,
 		 0}
 
-	test_data := [4]fixed.Int52_12{
+/*	test_data := [4]fixed.Int52_12{
     		 fixed.Int52_12{0, 1},
     		 fixed.Int52_12{1, 1},
 		 fixed.Int52_12{1, 0},
@@ -73,7 +74,7 @@ func TOP(
     		 0,
 		 1,
 		 0}
-
+*/
 	//weights exported from xornet on KERAS (epoch size = 500 - sgd)
 /*	weights := [][]fixed.Int52_12{
  		[]fixed.Int52_12{-0.35589939,
@@ -127,10 +128,13 @@ func TOP(
 	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
 	//Initialize the first layer
-	for i := 0; i < INP_LAYER_SIZE ; i++{
+	layer_in[0] = fixed.Int52_12(a)
+	layer_in[1] = fixed.Int52_12(b)
+
+/*	for i := 0; i < INP_LAYER_SIZE ; i++{
 	 
 		layer_in[i] = test_data[i]
-	}
+	}*/
 
 	//Calculate outvals for the hidden layer
 	for i := 0; i < HID_LAYER_SIZE ; i++{
