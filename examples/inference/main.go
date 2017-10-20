@@ -36,7 +36,7 @@ const INP_LAYER_SIZE int = 2
 const HID_LAYER_SIZE int = 16
 const OUT_LAYER_SIZE int = 1
 
-func TOP(
+func Top(
 	a int32,
 	b int32,
 	addr uintptr,
@@ -154,9 +154,9 @@ func TOP(
 	//FIXME add activations - sig
 	layer_out[0] = sum * weights_o
 
-	output := layer_out
+	output := layer_out[0]
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addr, output)
+		memWriteAddr, memWriteData, memWriteResp, false, addr, uint32(output))
 }
