@@ -17,16 +17,19 @@ import (
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
 
-func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, a fixed.Int26_6, b fixed.Int26_6, buff *xcl.Memory) {
+func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory buffOut *xcl.Memory) {
 
 
 
-	// Set the first operand
+/*	// Set the first operand
 	krnl.SetArg(0, uint32(a))
 	// Set the second operand
 	krnl.SetArg(1, uint32(b))
+*/
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buff)
+	krnl.SetMemoryArg(2, buffIn)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(2, buffOut)
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
@@ -53,16 +56,23 @@ func main() {
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The output is a uint32, so we need 4 bytes to store it
-        buff := world.Malloc(xcl.WriteOnly, 4)
-        defer buff.Free()
+        buffOut := world.Malloc(xcl.WriteOnly, 4)
+        defer buffOut.Free()
 
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The output is a uint32, so we need 4 bytes to store it
+        buffIn := world.Malloc(xcl.WriteOnly, 4)
+        defer buffIn.Free()
+
+/*
 	// Pass the arguments to the kernel
 	a := fixed.I26(0)
 	b := fixed.I26(1)
-
+*/
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, a, b, buff)
+		BenchmarkKernel(world, krnl, B, buffIn, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)
@@ -72,7 +82,7 @@ func main() {
 
 	// Decode that byte slice into the uint32 we're expecting
 	var ret fixed.Int26_6
-	err := binary.Read(buff.Reader(), binary.LittleEndian, &ret)
+	err := binary.Read(buffOut.Reader(), binary.LittleEndian, &ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
