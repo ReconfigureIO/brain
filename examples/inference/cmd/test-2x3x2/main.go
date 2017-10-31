@@ -17,7 +17,7 @@ import (
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
 
-func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory buffOut *xcl.Memory) {
+func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory, buffOut *xcl.Memory) {
 
 
 
@@ -26,8 +26,9 @@ func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xc
 	// Set the second operand
 	krnl.SetArg(1, uint32(b))
 */
+
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buffIn)
+	krnl.SetMemoryArg(4, buffIn)
 	// Set the pointer to the output buffer
 	krnl.SetMemoryArg(2, buffOut)
 
@@ -54,22 +55,28 @@ func main() {
 //	nw_image:= bnn.ReshapeImage(image)
 //	fmt.Println(nw_image)
 
+	inp := []fixed.Int26_6{0, 1}
+//	inpSize := binary.Size(inp)
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The output is a uint32, so we need 4 bytes to store it
+        buffIn := world.Malloc(xcl.ReadOnly, 8)
+        defer buffIn.Free()
+
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The output is a uint32, so we need 4 bytes to store it
         buffOut := world.Malloc(xcl.WriteOnly, 4)
         defer buffOut.Free()
 
-
-        // Allocate a buffer on the FPGA to store the return value of our computation
-        // The output is a uint32, so we need 4 bytes to store it
-        buffIn := world.Malloc(xcl.WriteOnly, 4)
-        defer buffIn.Free()
-
 /*
-	// Pass the arguments to the kernel
+	// Set the arguments to the kernel
 	a := fixed.I26(0)
 	b := fixed.I26(1)
+	
 */
+	binary.Write(buffIn.Writer(), binary.LittleEndian, inp)
+	//numBlocks := uint32(inpSize / 64)
+
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
 		BenchmarkKernel(world, krnl, B, buffIn, buffOut)
@@ -88,7 +95,7 @@ func main() {
 	}
 
 	// Compute the expected result 
-	expected := a ^ b 
+	expected := inp[0] ^ inp[1] 
 
 	// Exit with an error if the value is not correct
 	if expected != ret {
