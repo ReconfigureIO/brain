@@ -28,9 +28,9 @@ func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xc
 */
 
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(4, buffIn)
+	krnl.SetMemoryArg(0, buffIn)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buffOut)
+	krnl.SetMemoryArg(1, buffOut)
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
