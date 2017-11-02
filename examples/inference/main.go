@@ -37,9 +37,8 @@ const HID_LAYER_SIZE int = 16
 const OUT_LAYER_SIZE int = 1
 
 func Top(
-	a int32,
-	b int32,
-	addr uintptr,
+	addrIn uintptr,
+	addrOut uintptr,
 	// The first set of arguments will be the ports for interacting with host 
 	//output fixed.Int26_6,
 	// The second set of arguments will be the ports for interacting with memory
@@ -125,16 +124,18 @@ func Top(
 	var layer_out [OUT_LAYER_SIZE]fixed.Int26_6 //"sig"
 
 	// Since we're not reading anything from memory, disable those reads
-	go axiprotocol.ReadDisable(memReadAddr, memReadData)
+//	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
+	// Write it back to the pointer the host requests
+	
 	//Initialize the first layer
-	layer_in[0] = fixed.Int26_6(a)
-	layer_in[1] = fixed.Int26_6(b)
+//	layer_in[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn))
+//	layer_in[1] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn+4))
 
-/*	for i := 0; i < INP_LAYER_SIZE ; i++{
+	for i := 0; i < INP_LAYER_SIZE ; i++{
 	 
-		layer_in[i] = test_data[i]
-	}*/
+	 layer_in[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn + uintptr(4*i)))
+	}
 
 	//Calculate outvals for the hidden layer
 	for i := 0; i < HID_LAYER_SIZE ; i++{
@@ -158,5 +159,5 @@ func Top(
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addr, uint32(output))
+		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(output))
 }

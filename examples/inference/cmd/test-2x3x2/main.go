@@ -17,16 +17,20 @@ import (
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
 
-func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, a fixed.Int26_6, b fixed.Int26_6, buff *xcl.Memory) {
+func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory, buffOut *xcl.Memory) {
 
 
 
-	// Set the first operand
+/*	// Set the first operand
 	krnl.SetArg(0, uint32(a))
 	// Set the second operand
 	krnl.SetArg(1, uint32(b))
+*/
+
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buff)
+	krnl.SetMemoryArg(0, buffIn)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(1, buffOut)
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
@@ -51,18 +55,31 @@ func main() {
 //	nw_image:= bnn.ReshapeImage(image)
 //	fmt.Println(nw_image)
 
+	inp := []fixed.Int26_6{0, 1}
+//	inpSize := binary.Size(inp)
+
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The output is a uint32, so we need 4 bytes to store it
-        buff := world.Malloc(xcl.WriteOnly, 4)
-        defer buff.Free()
+        buffIn := world.Malloc(xcl.ReadOnly, 8)
+        defer buffIn.Free()
 
-	// Pass the arguments to the kernel
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The output is a uint32, so we need 4 bytes to store it
+        buffOut := world.Malloc(xcl.WriteOnly, 4)
+        defer buffOut.Free()
+
+/*
+	// Set the arguments to the kernel
 	a := fixed.I26(0)
 	b := fixed.I26(1)
+	
+*/
+	binary.Write(buffIn.Writer(), binary.LittleEndian, inp)
+	//numBlocks := uint32(inpSize / 64)
 
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, a, b, buff)
+		BenchmarkKernel(world, krnl, B, buffIn, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)
@@ -72,13 +89,13 @@ func main() {
 
 	// Decode that byte slice into the uint32 we're expecting
 	var ret fixed.Int26_6
-	err := binary.Read(buff.Reader(), binary.LittleEndian, &ret)
+	err := binary.Read(buffOut.Reader(), binary.LittleEndian, &ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
 
 	// Compute the expected result 
-	expected := a ^ b 
+	expected := inp[0] ^ inp[1] 
 
 	// Exit with an error if the value is not correct
 	if expected != ret {
