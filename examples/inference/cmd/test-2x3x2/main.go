@@ -17,7 +17,7 @@ import (
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
 
-func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory, buffOut *xcl.Memory) {
+func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory, buffActs *xcl.Memory, buffOut *xcl.Memory) {
 
 
 
@@ -30,7 +30,10 @@ func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xc
 	// Set the pointer to the output buffer
 	krnl.SetMemoryArg(0, buffIn)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(1, buffOut)
+	krnl.SetMemoryArg(1, buffActs)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(2, buffOut)
+
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
@@ -55,6 +58,210 @@ func main() {
 //	nw_image:= bnn.ReshapeImage(image)
 //	fmt.Println(nw_image)
 
+
+  //generated table by util/disretise_sig(1)
+  	actives := [200]fixed.Int26_6{fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 0 << 0), 
+		fixed.I26F(0 , 2 << 0), 
+		fixed.I26F(0 , 6 << 0), 
+		fixed.I26F(0 , 16 << 0), 
+		fixed.I26F(0 , 45 << 0), 
+		fixed.I26F(0 , 123 << 0), 
+		fixed.I26F(0 , 335 << 0), 
+		fixed.I26F(0 , 911 << 0), 
+		fixed.I26F(0 , 2472 << 0), 
+		fixed.I26F(0 , 6692 << 0), 
+		fixed.I26F(0 , 17986 << 0), 
+		fixed.I26F(0 , 47425 << 0), 
+		fixed.I26F(0 , 119202 << 0), 
+		fixed.I26F(0 , 268941 << 0), 
+		fixed.I26F(0 , 500000 << 0), 
+		fixed.I26F(0 , 731058 << 0), 
+		fixed.I26F(0 , 880797 << 0),
+		fixed.I26F(0 , 952574 << 0), 
+		fixed.I26F(0 , 982013 << 0), 
+		fixed.I26F(0 , 993307 << 0), 
+		fixed.I26F(0 , 997527 << 0), 
+		fixed.I26F(0 , 999088 << 0), 
+		fixed.I26F(0 , 999664 << 0), 
+		fixed.I26F(0 , 999876 << 0), 
+		fixed.I26F(0 , 999954 << 0), 
+		fixed.I26F(0 , 999983 << 0), 
+		fixed.I26F(0 , 999993 << 0), 
+		fixed.I26F(0 , 999997 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0),
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0), 
+		fixed.I26F(1 , 0 << 0)}
+
+
 	inp := []fixed.Int26_6{0, 1}
 //	inpSize := binary.Size(inp)
 
@@ -62,6 +269,12 @@ func main() {
         // The output is a uint32, so we need 4 bytes to store it
         buffIn := world.Malloc(xcl.ReadOnly, 8)
         defer buffIn.Free()
+
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The output is a uint32, so we need 4 bytes to store it
+        buffActs := world.Malloc(xcl.ReadOnly, 800)
+        defer buffActs.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The output is a uint32, so we need 4 bytes to store it
@@ -77,9 +290,12 @@ func main() {
 	binary.Write(buffIn.Writer(), binary.LittleEndian, inp)
 	//numBlocks := uint32(inpSize / 64)
 
+	binary.Write(buffActs.Writer(), binary.LittleEndian, actives)
+	//numBlocks := uint32(inpSize / 64)
+
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, buffIn, buffOut)
+		BenchmarkKernel(world, krnl, B, buffIn, buffActs, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)

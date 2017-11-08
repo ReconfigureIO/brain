@@ -37,13 +37,15 @@ const INP_LAYER_SIZE int = 4
 const HID_LAYER_SIZE int = 3
 const OUT_LAYER_SIZE int = 3
 
-
+/*
 // TODO Use Xilinx's full precision LogiCore IP
 // for math.Exp. For now a lookup table is imported instead.
 func sigmoid_act(x fixed.Int26_6) fixed.Int26_6{
 
   //generated table by util/disretise_sig(1)
-  prime := [200]fixed.Int26_6{
+  prime := [16]fixed.Int26_6{
+
+/*fixed.I26F(0 , 0 << 0), 
 		fixed.I26F(0 , 0 << 0), 
 		fixed.I26F(0 , 0 << 0), 
 		fixed.I26F(0 , 0 << 0), 
@@ -130,7 +132,7 @@ func sigmoid_act(x fixed.Int26_6) fixed.Int26_6{
 		fixed.I26F(0 , 0 << 0), 
 		fixed.I26F(0 , 0 << 0), 
 		fixed.I26F(0 , 0 << 0), 
-		fixed.I26F(0 , 0 << 0), 
+
 		fixed.I26F(0 , 2 << 0), 
 		fixed.I26F(0 , 6 << 0), 
 		fixed.I26F(0 , 16 << 0), 
@@ -146,12 +148,15 @@ func sigmoid_act(x fixed.Int26_6) fixed.Int26_6{
 		fixed.I26F(0 , 268941 << 0), 
 		fixed.I26F(0 , 500000 << 0), 
 		fixed.I26F(0 , 731058 << 0), 
-		fixed.I26F(0 , 880797 << 0), 
+		fixed.I26F(0 , 880797 << 0)}
+/* 
 		fixed.I26F(0 , 952574 << 0), 
 		fixed.I26F(0 , 982013 << 0), 
 		fixed.I26F(0 , 993307 << 0), 
 		fixed.I26F(0 , 997527 << 0), 
-		fixed.I26F(0 , 999088 << 0), 
+		fixed.I26F(0 , 999088 << 0)*/
+
+/*, 
 		fixed.I26F(0 , 999664 << 0), 
 		fixed.I26F(0 , 999876 << 0), 
 		fixed.I26F(0 , 999954 << 0), 
@@ -180,7 +185,10 @@ func sigmoid_act(x fixed.Int26_6) fixed.Int26_6{
 		fixed.I26F(0 , 999999 << 0), 
 		fixed.I26F(0 , 999999 << 0), 
 		fixed.I26F(0 , 999999 << 0), 
-		fixed.I26F(0 , 999999 << 0), 
+		fixed.I26F(0 , 999999 << 0)
+} 
+
+
 		fixed.I26F(1 , 0 << 0), 
 		fixed.I26F(1 , 0 << 0), 
 		fixed.I26F(1 , 0 << 0), 
@@ -243,14 +251,30 @@ func sigmoid_act(x fixed.Int26_6) fixed.Int26_6{
 		fixed.I26F(1 , 0 << 0), 
 		fixed.I26F(1 , 0 << 0), 
 		fixed.I26F(1 , 0 << 0), 
-		fixed.I26F(1 , 0 << 0)} 
+		fixed.I26F(1 , 0 << 0)
+
         // Convert x (26_6) to index
 	// add by (200*z)/2 index  
 	return prime[uint8(x) + 100]
-}
+
+	if (uint8(x) + 100) < 87 {
+
+		return 0
+
+	} else if (uint8(x) + 100) < 137 {
+
+		return prime[uint8(x) + 100 - 87]
+
+	} else {
+
+		return 1	
+	}
+
+}*/
 
 func Top(
 	addrIn uintptr,
+	addrAct uintptr,
 	addrOut uintptr,
 	// The first set of arguments will be the ports for interacting with host 
 	//output fixed.Int26_6,
@@ -328,6 +352,10 @@ func Top(
 
 	weights_o := fixed.I26F(0, 46938747) //09490085??
 
+	acts := [200]fixed.Int26_6{0}
+
+	ch := make(chan uint32, 200)
+
 	//build a network with 3 layers of input, hidden, and output
 //	layer_in := NetworkLayer(INP_LAYER_SIZE,"relu")
 //	layer_hidden := NetworkLayer(HID_LAYER_SIZE,"relu")
@@ -337,6 +365,8 @@ func Top(
 	var layer_hidden [HID_LAYER_SIZE]fixed.Int26_6 //"relu")
 	var layer_out [OUT_LAYER_SIZE]fixed.Int26_6 //"sig"
 
+
+
 	// Since we're not reading anything from memory, disable those reads
 //	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
@@ -345,6 +375,14 @@ func Top(
 	//Initialize the first layer
 //	layer_in[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn))
 //	layer_in[1] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn+4))
+
+        aximemory.ReadBurstUInt32(memReadAddr, memReadData, false, addrAct, 10, ch )
+
+	for i := 0; i < 10 ; i++{
+	 
+	 acts[i] = fixed.Int26_6(<-ch)
+	}
+
 
 	for i := 0; i < INP_LAYER_SIZE ; i++{
 	 
@@ -368,7 +406,7 @@ func Top(
 	}
 	//FIXME add activations - sig
 	 
-	layer_out[0] = sigmoid_act(sum * weights_o)
+	layer_out[0] = acts[uint8(sum * weights_o)]
 
 	output := layer_out[0]
 
