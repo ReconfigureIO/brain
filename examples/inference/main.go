@@ -354,7 +354,7 @@ func Top(
 
 	acts := [200]fixed.Int26_6{0}
 
-	ch := make(chan uint32, 200)
+	ch := make(chan uint32, 2)
 
 	//build a network with 3 layers of input, hidden, and output
 //	layer_in := NetworkLayer(INP_LAYER_SIZE,"relu")
@@ -376,9 +376,9 @@ func Top(
 //	layer_in[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn))
 //	layer_in[1] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn+4))
 
-        aximemory.ReadBurstUInt32(memReadAddr, memReadData, false, addrAct, 10, ch )
+        aximemory.ReadBurstUInt32(memReadAddr, memReadData, false, addrAct, 2, ch )
 
-	for i := 0; i < 10 ; i++{
+	for i := 0; i < 2 ; i++{
 	 
 	 acts[i] = fixed.Int26_6(<-ch)
 	}
