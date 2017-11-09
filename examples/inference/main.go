@@ -76,24 +76,40 @@ func Top(
 	//Calculate outvals for the hidden layer
 	for i := 0; i < HID_LAYER_SIZE ; i++{
 	 
-		inp0 := layer_in[0] * weights_h[i]
-		inp1 := layer_in[1] * weights_h[i]
-		out := inp0 + inp1 
- 		
+
+		p0 := layer_in[0] * weights_h[i]
+		p1 := layer_in[1] * weights_h[i]
+		p2 := layer_in[2] * weights_h[i]
+		p3 := layer_in[3] * weights_h[i]
+
+		// Add corresponding Bias
+		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBH + uintptr(4*i)))
+
+		// Calculate biased sum of products per neuron in hidden layer
+		out := p0 + p1 + p2 + p3 + bias			
+		
+		// Apply Sigmoid function 
 		layer_hidden[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*out)))
  	}
+
 	//Calculate outval for the output layer
-	sum := fixed.Int26_6(0)
 	for i := 0; i < OUT_LAYER_SIZE ; i++{
 	 
-		sum += layer_hidden[i]
-	}
-	
-	layer_out[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4 * uint8(sum * weights_o))))
+		p0 := layer_hidden[0] * weights_o[i]
+		p1 := layer_hidden[1] * weights_o[i]
+		p2 := layer_hidden[2] * weights_o[i]
 
-	output := layer_out[0]
+		// Add corresponding Bias
+		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBO + uintptr(4*i)))
+
+		// Calculate biased sum of products per neuron in hidden layer
+		out := p0 + p1 + p2 + bias			
+		
+		// Apply Sigmoid function 
+		layer_out[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*out)))
+	}
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(output))
+		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32({layer_out[2],layer_out[1],layer_out[0]}))
 }
