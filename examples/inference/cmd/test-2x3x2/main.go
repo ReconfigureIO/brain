@@ -272,42 +272,42 @@ func main() {
 		fixed.I26F(1 , 0 << 0)}
 
 	// Input batch size = 4 - famous iris flower dataset
-	inp := [4]fixed.Int26_6{fixed.I26F(0 , 583333333333 << 0),
-		fixed.I26F(0 , 291666666667 << 0),
-		fixed.I26F(0 , 728813559322 << 0),
+	inp := [4]fixed.Int26_6{fixed.I26F(0 , 583333333 << 0),
+		fixed.I26F(0 , 291666666 << 0),
+		fixed.I26F(0 , 728813559 << 0),
 		fixed.I26F(0 , 75 << 0)}
 
 	// From the training stage of datadan.io network model
-	weightH := [12]fixed.Int26_6{fixed.I26F(-9 , 664649023077196 << 0),
-		fixed.I26F(-3 , 331748963332474 << 0),
-		fixed.I26F(0 , 4798734558954657 >> 1),
-		fixed.I26F(-9 , 16865031545236 << 0),
-		fixed.I26F(7 , 526678142973989 << 0),
-		fixed.I26F(-11 , 259862681673592 << 0),
-		fixed.I26F(35 , 375442386538865 << 0),
-		fixed.I26F(-8 , 377651024226779 << 0),
-		fixed.I26F(0 , 5857331473302626 << 0),
-		fixed.I26F(14 , 569948798276545 << 0),
-		fixed.I26F(-6 , 977871499870339 << 0),
-		fixed.I26F(-3 , 595834572863486 << 0)}
+	weightH := [12]fixed.Int26_6{fixed.I26F(-9 , 664649023 << 0),
+		fixed.I26F(-3 , 331748963 << 0),
+		fixed.I26F(0 , 479873455 >> 1),
+		fixed.I26F(-9 , 16865031 << 0),
+		fixed.I26F(7 , 526678142 << 0),
+		fixed.I26F(-11 , 25986268 << 0),
+		fixed.I26F(35 , 375442386 << 0),
+		fixed.I26F(-8 , 377651024 << 0),
+		fixed.I26F(0 , 585733147 << 0),
+		fixed.I26F(14 , 56994879 << 0),
+		fixed.I26F(-6 , 97787149 << 0),
+		fixed.I26F(-3 , 59583457 << 0)}
 
-	biasH := [3]fixed.Int26_6{fixed.I26F(-24 , 257317924965545 << 0),
-		fixed.I26F(2 , 841569482220003 << 0),
-		fixed.I26F(1 , 2344415303891234 << 0)}
+	biasH := [3]fixed.Int26_6{fixed.I26F(-24 , 257317924 << 0),
+		fixed.I26F(2 , 84156948 << 0),
+		fixed.I26F(1 , 23444153 << 0)}
 
-	weightO := [9]fixed.Int26_6{fixed.I26F(-6 , 421059674610277 << 0),
-		fixed.I26F(10 , 430255115994242 << 0),
-		fixed.I26F(-10 , 466201644889994 << 0),
-		fixed.I26F(12 , 38461165673367 << 0),
-		fixed.I26F(-5 , 610451231603859 << 0),
-		fixed.I26F(-11 , 310357612664564 << 0),
-		fixed.I26F(-12 , 155845492268348 << 0),
-		fixed.I26F(-4 , 313406702633787 << 0),
-		fixed.I26F(1 , 3793360362443159 << 0)}
+	weightO := [9]fixed.Int26_6{fixed.I26F(-6 , 421059674 << 0),
+		fixed.I26F(10 , 430255115 << 0),
+		fixed.I26F(-10 , 466201644 << 0),
+		fixed.I26F(12 , 384611656 << 0),
+		fixed.I26F(-5 , 610451231 << 0),
+		fixed.I26F(-11 , 310357612 << 0),
+		fixed.I26F(-12 , 155845492 << 0),
+		fixed.I26F(-4 , 313406702 << 0),
+		fixed.I26F(1 , 379336036 << 0)}
 
-	biasO := [3]fixed.Int26_6{fixed.I26F(-4 , 703941034009741 << 0),
-		fixed.I26F(-6 , 59314294559707 >> 1),
-		fixed.I26F(6 , 201619726339744 << 0)}
+	biasO := [3]fixed.Int26_6{fixed.I26F(-4 , 70394103 << 0),
+		fixed.I26F(-6 , 59314294 >> 1),
+		fixed.I26F(6 , 20161972 << 0)}
 
 
         // Allocate a buffer on the FPGA to store the return value of our computation
