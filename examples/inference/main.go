@@ -352,9 +352,9 @@ func Top(
 
 	weights_o := fixed.I26F(0, 46938747) //09490085??
 
-	acts := [200]fixed.Int26_6{0}
+//	acts := [64]fixed.Int26_6{0}
 
-	ch := make(chan uint32, 2)
+//	ch := make(chan uint32, 2)
 
 	//build a network with 3 layers of input, hidden, and output
 //	layer_in := NetworkLayer(INP_LAYER_SIZE,"relu")
@@ -376,12 +376,12 @@ func Top(
 //	layer_in[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn))
 //	layer_in[1] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn+4))
 
-        aximemory.ReadBurstUInt32(memReadAddr, memReadData, false, addrAct, 2, ch )
+//        aximemory.ReadBurstUInt32(memReadAddr, memReadData, false, addrAct, 2, ch )
 
-	for i := 0; i < 2 ; i++{
+//	for i := 0; i < 2 ; i++{
 	 
-	 acts[i] = fixed.Int26_6(<-ch)
-	}
+//	 acts[i] = fixed.Int26_6(<-ch)
+//	}
 
 
 	for i := 0; i < INP_LAYER_SIZE ; i++{
@@ -395,8 +395,8 @@ func Top(
 		inp0 := layer_in[0] * weights_h[i]
 		inp1 := layer_in[1] * weights_h[i]
 		out := inp0 + inp1 
- 		//FIXME add activations - relu
-		layer_hidden[i] = out  
+ 		
+		layer_hidden[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*out)))
  	}
 	//Calculate outval for the output layer
 	sum := fixed.Int26_6(0)
@@ -404,9 +404,8 @@ func Top(
 	 
 		sum += layer_hidden[i]
 	}
-	//FIXME add activations - sig
-	 
-	layer_out[0] = acts[uint8(sum * weights_o)]
+	
+	layer_out[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4 * uint8(sum * weights_o))))
 
 	output := layer_out[0]
 
