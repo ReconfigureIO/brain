@@ -372,7 +372,7 @@ func main() {
 	fmt.Printf("%s\n", result.String())
 
 	// Decode that byte slice into the uint32 we're expecting
-	var ret []fixed.Int26_6
+	var ret fixed.Int26_6
 	err := binary.Read(buffOut.Reader(), binary.LittleEndian, &ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
@@ -382,9 +382,9 @@ func main() {
 	expected := [3]fixed.Int26_6{0,1,0}
 
 	// Exit with an error if the value is not correct
-	if expected[1] != ret[1] {
+	if expected[1] != ret {
 		// Print the value we got from the FPGA
-		fmt.Printf("Expected %d, got %d\n", expected[1], ret[1])
+		fmt.Printf("Expected %b, got %b in binary\n", expected[1], ret)
 		os.Exit(1)
 	}
 

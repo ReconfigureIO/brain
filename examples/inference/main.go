@@ -126,7 +126,7 @@ func Top(
 		// Add corresponding Bias
 		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBO + uintptr(4*i)))
 
-		// Calculate biased sum of products per neuron in hidden layer
+		// Calculate biased sum of products per neuron in output layer
 		out := p0 + p1 + p2 + bias			
 		
 		// Apply Sigmoid function 
@@ -135,5 +135,5 @@ func Top(
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addrOut, layer_out)
+		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(weightH[0]))
 }
