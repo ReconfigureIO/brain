@@ -22,9 +22,9 @@ func BenchmarkKernel(world xcl.World,
 		B *testing.B, 
 		buffActs *xcl.Memory, 
 		buffIn *xcl.Memory, 
-		buffWeightH *xcl.Memory,
+//		buffWeightH *xcl.Memory,
 		buffBiasH *xcl.Memory,
-		buffWeightO *xcl.Memory,
+//		buffWeightO *xcl.Memory,
 		buffBiasO *xcl.Memory,
 		buffOut *xcl.Memory) {
 
@@ -34,15 +34,15 @@ func BenchmarkKernel(world xcl.World,
 	// Set the pointer to the output buffer
 	krnl.SetMemoryArg(1, buffIn)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buffWeightH)
+//	krnl.SetMemoryArg(2, buffWeightH)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(3, buffBiasH)
+	krnl.SetMemoryArg(2, buffBiasH)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(4, buffWeightO)
+//	krnl.SetMemoryArg(4, buffWeightO)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(5, buffBiasO)
+	krnl.SetMemoryArg(3, buffBiasO)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(6, buffOut)
+	krnl.SetMemoryArg(4, buffOut)
 
 
 	// Reset the timer so that we only measure runtime of the kernel
@@ -278,7 +278,7 @@ func main() {
 		fixed.I26F(0 , 75 << 0)}
 
 	// From the training stage of datadan.io network model
-	weightH := [12]fixed.Int26_6{fixed.I26F(-9 , 664649023 << 0),
+/*	weightH := [12]fixed.Int26_6{fixed.I26F(-9 , 664649023 << 0),
 		fixed.I26F(-3 , 331748963 << 0),
 		fixed.I26F(0 , 479873455 >> 1),
 		fixed.I26F(-9 , 16865031 << 0),
@@ -289,13 +289,13 @@ func main() {
 		fixed.I26F(0 , 585733147 << 0),
 		fixed.I26F(14 , 56994879 << 0),
 		fixed.I26F(-6 , 97787149 << 0),
-		fixed.I26F(-3 , 59583457 << 0)}
+		fixed.I26F(-3 , 59583457 << 0)}*/
 
 	biasH := [3]fixed.Int26_6{fixed.I26F(-24 , 257317924 << 0),
 		fixed.I26F(2 , 84156948 << 0),
 		fixed.I26F(1 , 23444153 << 0)}
 
-	weightO := [9]fixed.Int26_6{fixed.I26F(-6 , 421059674 << 0),
+/*	weightO := [9]fixed.Int26_6{fixed.I26F(-6 , 421059674 << 0),
 		fixed.I26F(10 , 430255115 << 0),
 		fixed.I26F(-10 , 466201644 << 0),
 		fixed.I26F(12 , 384611656 << 0),
@@ -303,7 +303,7 @@ func main() {
 		fixed.I26F(-11 , 310357612 << 0),
 		fixed.I26F(-12 , 155845492 << 0),
 		fixed.I26F(-4 , 313406702 << 0),
-		fixed.I26F(1 , 379336036 << 0)}
+		fixed.I26F(1 , 379336036 << 0)}*/
 
 	biasO := [3]fixed.Int26_6{fixed.I26F(-4 , 70394103 << 0),
 		fixed.I26F(-6 , 59314294 >> 1),
@@ -322,8 +322,8 @@ func main() {
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The hidden-weights is a 12-uint32 set, so we need 4 * 12 bytes to store it
-        buffWeightH := world.Malloc(xcl.ReadOnly, 48)
-        defer buffActs.Free()
+//        buffWeightH := world.Malloc(xcl.ReadOnly, 48)
+//        defer buffActs.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The hidden biases is a 3-uint32 set, so we need 4 * 3 bytes to store it
@@ -332,8 +332,8 @@ func main() {
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The out weights is a 9-uint32 set, so we need 4 * 9 bytes to store it
-        buffWeightO := world.Malloc(xcl.ReadOnly, 36)
-        defer buffActs.Free()
+//        buffWeightO := world.Malloc(xcl.ReadOnly, 36)
+//        defer buffActs.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The out biases is a 3-uint32 set, so we need 4 * 3 bytes to store it
@@ -352,18 +352,18 @@ func main() {
 
 	binary.Write(buffIn.Writer(), binary.LittleEndian, inp)
 
-	binary.Write(buffWeightH.Writer(), binary.LittleEndian, weightH)
+//	binary.Write(buffWeightH.Writer(), binary.LittleEndian, weightH)
 
 	binary.Write(buffBiasH.Writer(), binary.LittleEndian, biasH)
 
-	binary.Write(buffWeightO.Writer(), binary.LittleEndian, weightO)
+//	binary.Write(buffWeightO.Writer(), binary.LittleEndian, weightO)
 
 	binary.Write(buffBiasO.Writer(), binary.LittleEndian, biasO)
 
 
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, buffActs, buffIn, buffWeightH, buffBiasH, buffWeightO, buffBiasO, buffOut)
+		BenchmarkKernel(world, krnl, B, buffActs, buffIn, /*buffWeightH,*/ buffBiasH, /*buffWeightO,*/ buffBiasO, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)
