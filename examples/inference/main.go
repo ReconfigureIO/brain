@@ -70,6 +70,8 @@ func Top(
 	weights_h := [12]fixed.Int26_6{0}
 	weights_o := [9]fixed.Int26_6{0}
 
+
+
 	for i := 0; i < INP_LAYER_SIZE * HID_LAYER_SIZE; i++{
 	 
 	 weights_h[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrWH + uintptr(4*i)))
@@ -102,11 +104,10 @@ func Top(
 		out := p0 + p1 + p2 + p3 + bias			
 		
 		// Apply Sigmoid function + index
-		layer_hidden[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*out + 100)))
+		layer_hidden[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*(out>>6 + 100))))
  	}
 
 	//Calculate outval for the output layer
-	out := [3]fixed.Int26_6{0} 
 	for i := 0; i < OUT_LAYER_SIZE ; i++{
 	 
 		p0 := layer_hidden[0] * weights_o[0 + i]
@@ -117,14 +118,14 @@ func Top(
 		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBO + uintptr(4*i)))
 
 		// Calculate biased sum of products per neuron in output layer
-		out[i] = p0 + p1 + p2 + bias			
+		out := p0 + p1 + p2 + bias		
 		
 		// Apply Sigmoid function + index
-		layer_out[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*out[i] + 100)))
+		layer_out[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*(out>>6 + 100))))
 	}
 
 	// Write it back to the pointer the host requests
-	aximemory.WriteUInt64(
-		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint64(out[0] + out[1] << 16 + out[2] << 32))
+	aximemory.WriteUInt32(
+		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(layer_out[1]))
 
 }
