@@ -15,7 +15,12 @@ limitations under the License.
 
 package utils
 
-import "github.com/sjwhitworth/golearn/base"
+import (
+
+	"github.com/sjwhitworth/golearn/base"
+	"fmt"
+	"math"
+)
 
 func load_data(path string) (instance *base.DenseInstances){
 
@@ -24,5 +29,30 @@ func load_data(path string) (instance *base.DenseInstances){
       panic(err)
    }
    return rawData
+}
+
+// Continuous sigmoid implementation
+func sigmoid(x float64) float64 {  
+        return 1.0 / (1.0 + math.Exp(-x))
+}
+
+// Discretise sigmoid based on 'z' granularity
+// 'z' = 1 returns a 200 entry table of sigmoid
+func discrete_sigmoid(z int32) {
+
+    i := float64(0)
+    index := 0	
+    for i = -100.0 ; i < 100.0 ; i= i + (1/z){
+
+       tmp := sigmoid(i)
+       index = index + 1	 	
+       if tmp == 1 {
+   
+              fmt.Printf("fixed.I26F(1 , 0 << 0), \n")		        
+       }else {fmt.Printf("fixed.I26F(0 , %d << 0), \n", int64(tmp*1000000))
+       }
+    }
+    
+
 }
 

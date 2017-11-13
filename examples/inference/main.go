@@ -30,15 +30,19 @@ import (
 //	"github.com/reconfigureio/add"
 )
 
-
-
-const INP_LAYER_SIZE int = 2
-const HID_LAYER_SIZE int = 16
-const OUT_LAYER_SIZE int = 1
+const INP_LAYER_SIZE int = 4
+const HID_LAYER_SIZE int = 3
+const OUT_LAYER_SIZE int = 3
 
 func Top(
+	addrAct uintptr,
 	addrIn uintptr,
+	addrWH uintptr,
+	addrBH uintptr,
+	addrWO uintptr,
+	addrBO uintptr,
 	addrOut uintptr,
+
 	// The first set of arguments will be the ports for interacting with host 
 	//output fixed.Int26_6,
 	// The second set of arguments will be the ports for interacting with memory
@@ -49,89 +53,36 @@ func Top(
 	memWriteData chan<- axiprotocol.WriteData,
 	memWriteResp <-chan axiprotocol.WriteResp){
 
-	//cast rawdate to input vars
-/*	training_data := [][]fixed.Int26_6{
-    		 []fixed.Int26_6{0, 0},
-    		 []fixed.Int26_6{0, 1},
-		 []fixed.Int26_6{1, 0},
-		 []fixed.Int26_6{1, 1}}
-
-	target_data := []fixed.Int26_6{
-    		 0,
-    		 1,
-		 1,
-		 0}
-*/
-/*	test_data := [4]fixed.Int26_6{
-    		 fixed.Int26_6{0, 1},
-    		 fixed.Int26_6{1, 1},
-		 fixed.Int26_6{1, 0},
-		 fixed.Int26_6{0, 0}}
-
-	acc_data := []fixed.Int26_6{
-    		 1,
-    		 0,
-		 1,
-		 0}
-*/
-	//weights exported from xornet on KERAS (epoch size = 500 - sgd)
-/*	weights := [][]fixed.Int26_6{
- 		[]fixed.Int26_6{-0.35589939,
-       		  0.13612342,
-       		 -0.27676189,
-       		 -0.06193029,
-       		 -0.37450755,
-       		  0.48630142,
-       		  0.40621114,
-       		  0.11644399,
-       		 -0.33843306,
-       		  0.34775987,
-       		 -0.14313582,
-       		 -0.04034447,
-       		  0.54061526,
-       		 -0.42877936,
-       		  0.54952145,
-       		  0.19469711},[]fixed.Int26_6{-0.08784658}}*/
-
-	//weights exported from xornet on KERAS (epoch size = 5000 - adam)
-	weights_h := [16]fixed.Int26_6{
-		 fixed.I26F(0, 1726144),
-		 fixed.I26F(-2, 10709),
-       		 fixed.I26F(0, 43040475),
-	         fixed.I26F(-0, 36798), //?
-       		 fixed.I26F(-2 ,14761877),
-       		 fixed.I26F(1 ,65221334),
-       		 fixed.I26F(-0, 47918937),
-       		 fixed.I26F(-2 ,28618431),
-      		 fixed.I26F(-1, 64216483),
-       		 fixed.I26F(1, 45400071),
-       		 fixed.I26F(0, 8930543), //?
-       		 fixed.I26F(-1,85224831),
-       		 fixed.I26F(1,3171016),
-     		 fixed.I26F(-1,74173605),
-       		 fixed.I26F(-0,37978798),
-       		 fixed.I26F(-2,9490085)}
-
-	weights_o := fixed.I26F(0, 46938747) //09490085??
-
 	//build a network with 3 layers of input, hidden, and output
 //	layer_in := NetworkLayer(INP_LAYER_SIZE,"relu")
 //	layer_hidden := NetworkLayer(HID_LAYER_SIZE,"relu")
 //	layer_out := NetworkLayer(OUT_LAYER_SIZE,"sig")
 
-	var layer_in [INP_LAYER_SIZE]fixed.Int26_6  //"relu"
-	var layer_hidden [HID_LAYER_SIZE]fixed.Int26_6 //"relu")
-	var layer_out [OUT_LAYER_SIZE]fixed.Int26_6 //"sig"
+	var layer_in [INP_LAYER_SIZE]fixed.Int26_6  
+	var layer_hidden [HID_LAYER_SIZE]fixed.Int26_6 
+	var layer_out [OUT_LAYER_SIZE]fixed.Int26_6 
+
 
 	// Since we're not reading anything from memory, disable those reads
-//	go axiprotocol.ReadDisable(memReadAddr, memReadData)
+	//go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
-	// Write it back to the pointer the host requests
-	
-	//Initialize the first layer
-//	layer_in[0] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn))
-//	layer_in[1] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn+4))
+	// Fetch weights from the main memory
+	weights_h := [12]fixed.Int26_6{0}
+	weights_o := [9]fixed.Int26_6{0}
 
+
+
+	for i := 0; i < INP_LAYER_SIZE * HID_LAYER_SIZE; i++{
+	 
+	 weights_h[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrWH + uintptr(4*i)))
+	}
+
+	for i := 0; i < HID_LAYER_SIZE * OUT_LAYER_SIZE; i++{
+	 
+	 weights_o[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrWO + uintptr(4*i)))
+	}
+
+	//Read in the first input batch
 	for i := 0; i < INP_LAYER_SIZE ; i++{
 	 
 	 layer_in[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrIn + uintptr(4*i)))
@@ -140,24 +91,41 @@ func Top(
 	//Calculate outvals for the hidden layer
 	for i := 0; i < HID_LAYER_SIZE ; i++{
 	 
-		inp0 := layer_in[0] * weights_h[i]
-		inp1 := layer_in[1] * weights_h[i]
-		out := inp0 + inp1 
- 		//FIXME add activations - relu
-		layer_hidden[i] = out  
+
+		p0 := layer_in[0] * weights_h[0 + i]
+		p1 := layer_in[1] * weights_h[3 + i]
+		p2 := layer_in[2] * weights_h[6 + i]
+		p3 := layer_in[3] * weights_h[9 + i]
+
+		// Add corresponding Bias
+		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBH + uintptr(4*i)))
+
+		// Calculate biased sum of products per neuron in hidden layer
+		out := p0 + p1 + p2 + p3 + bias			
+		
+		// Apply Sigmoid function + index
+		layer_hidden[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*(out>>6 + 100))))
  	}
+
 	//Calculate outval for the output layer
-	sum := fixed.Int26_6(0)
 	for i := 0; i < OUT_LAYER_SIZE ; i++{
 	 
-		sum += layer_hidden[i]
-	}
-	//FIXME add activations - sig
-	layer_out[0] = sum * weights_o
+		p0 := layer_hidden[0] * weights_o[0 + i]
+		p1 := layer_hidden[1] * weights_o[3 + i]
+		p2 := layer_hidden[2] * weights_o[6 + i]
 
-	output := layer_out[0]
+		// Add corresponding Bias
+		bias := fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrBO + uintptr(4*i)))
+
+		// Calculate biased sum of products per neuron in output layer
+		out := p0 + p1 + p2 + bias		
+		
+		// Apply Sigmoid function + index
+		layer_out[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*(out>>6 + 100))))
+	}
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(output))
+		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(layer_out[1]))
+
 }

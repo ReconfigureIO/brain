@@ -9,6 +9,7 @@ import (
 //	"github.com/reconfigureio/brain/bnn"
 //	"github.com/reconfigureio/brain/utils"
 	"github.com/reconfigureio/fixed"
+	"github.com/reconfigureio/fixed/host"
 )
 
 //Partition example dataset based on BATCH_SIZE
@@ -17,20 +18,33 @@ import (
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
 
-func BenchmarkKernel(world xcl.World, krnl *xcl.Kernel, B *testing.B, buffIn *xcl.Memory, buffOut *xcl.Memory) {
+func BenchmarkKernel(world xcl.World, 
+		krnl *xcl.Kernel,
+		B *testing.B, 
+		buffActs *xcl.Memory, 
+		buffIn *xcl.Memory, 
+		buffWeightH *xcl.Memory,
+		buffBiasH *xcl.Memory,
+		buffWeightO *xcl.Memory,
+		buffBiasO *xcl.Memory,
+		buffOut *xcl.Memory) {
 
-
-
-/*	// Set the first operand
-	krnl.SetArg(0, uint32(a))
-	// Set the second operand
-	krnl.SetArg(1, uint32(b))
-*/
 
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(0, buffIn)
+	krnl.SetMemoryArg(0, buffActs)
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(1, buffOut)
+	krnl.SetMemoryArg(1, buffIn)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(2, buffWeightH)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(3, buffBiasH)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(4, buffWeightO)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(5, buffBiasO)
+	// Set the pointer to the output buffer
+	krnl.SetMemoryArg(6, buffOut)
+
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
@@ -55,31 +69,302 @@ func main() {
 //	nw_image:= bnn.ReshapeImage(image)
 //	fmt.Println(nw_image)
 
-	inp := []fixed.Int26_6{0, 1}
-//	inpSize := binary.Size(inp)
+
+	// Generated table by util/disretise_sig(1)
+  	actives := [200]fixed.Int26_6{host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0), 
+		host.I26Float64(0.2), 
+		host.I26Float64(0.6), 
+		host.I26Float64(0.16), 
+		host.I26Float64(0.45), 
+		host.I26Float64(0.123), 
+		host.I26Float64(0.335), 
+		host.I26Float64(0.911), 
+		host.I26Float64(0.2472), 
+		host.I26Float64(0.6692), 
+		host.I26Float64(0.17986), 
+		host.I26Float64(0.47425), 
+		host.I26Float64(0.119202), 
+		host.I26Float64(0.268941), 
+		host.I26Float64(0.500000), 
+		host.I26Float64(0.731058), 
+		host.I26Float64(0.880797),
+		host.I26Float64(0.952574), 
+		host.I26Float64(0.982013), 
+		host.I26Float64(0.993307), 
+		host.I26Float64(0.997527), 
+		host.I26Float64(0.999088), 
+		host.I26Float64(0.999664), 
+		host.I26Float64(0.999876), 
+		host.I26Float64(0.999954), 
+		host.I26Float64(0.999983), 
+		host.I26Float64(0.999993), 
+		host.I26Float64(0.999997), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999), 
+		host.I26Float64(0.999999),
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1), 
+		host.I26Float64(1)}
+
+	// Input batch size = 4 - famous iris flower dataset
+	inp := [4]fixed.Int26_6{host.I26Float64(0.583333333),
+		host.I26Float64(0.291666666),
+		host.I26Float64(0.728813559),
+		host.I26Float64(0.75)}
+
+	// From the training stage of datadan.io network model
+	weightH := [12]fixed.Int26_6{host.I26Float64(-9.664649023),
+		host.I26Float64(-3.331748963),
+		host.I26Float64(0.0479873455),
+		host.I26Float64(-9.16865031),
+		host.I26Float64(7.526678142),
+		host.I26Float64(-11.25986268),
+		host.I26Float64(35.375442386),
+		host.I26Float64(-8.377651024),
+		host.I26Float64(0.585733147),
+		host.I26Float64(14.56994879),
+		host.I26Float64(-6.97787149),
+		host.I26Float64(-3.59583457)}
+
+	biasH := [3]fixed.Int26_6{host.I26Float64(-24.257317924),
+		host.I26Float64(2.84156948),
+		host.I26Float64(1.23444153)}
+
+	weightO := [9]fixed.Int26_6{host.I26Float64(-6.421059674),
+		host.I26Float64(10.430255115),
+		host.I26Float64(-10.466201644),
+		host.I26Float64(12.384611656),
+		host.I26Float64(-5.610451231),
+		host.I26Float64(-11.310357612),
+		host.I26Float64(-12.155845492),
+		host.I26Float64(-4.313406702),
+		host.I26Float64(1.379336036)}
+
+	biasO := [3]fixed.Int26_6{host.I26Float64(-4.70394103),
+		host.I26Float64(-6.059314294),
+		host.I26Float64(6.20161972)}
+
 
         // Allocate a buffer on the FPGA to store the return value of our computation
-        // The output is a uint32, so we need 4 bytes to store it
-        buffIn := world.Malloc(xcl.ReadOnly, 8)
+        // The activations is a 200-uint32 set, so we need 4 * 200 bytes to store it
+        buffActs := world.Malloc(xcl.ReadOnly, 800)
+        defer buffActs.Free()
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The input is a 4-uint32 set, so we need 4 * 4 bytes to store it
+        buffIn := world.Malloc(xcl.ReadOnly, 16)
         defer buffIn.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
-        // The output is a uint32, so we need 4 bytes to store it
+        // The hidden-weights is a 12-uint32 set, so we need 4 * 12 bytes to store it
+        buffWeightH := world.Malloc(xcl.ReadOnly, 48)
+        defer buffActs.Free()
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The hidden biases is a 3-uint32 set, so we need 4 * 3 bytes to store it
+        buffBiasH := world.Malloc(xcl.ReadOnly, 12)
+        defer buffActs.Free()
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The out weights is a 9-uint32 set, so we need 4 * 9 bytes to store it
+        buffWeightO := world.Malloc(xcl.ReadOnly, 36)
+        defer buffActs.Free()
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The out biases is a 3-uint32 set, so we need 4 * 3 bytes to store it
+        buffBiasO := world.Malloc(xcl.ReadOnly, 12)
+        defer buffActs.Free()
+
+        // Allocate a buffer on the FPGA to store the return value of our computation
+        // The output is a int32, so we need 4 bytes to store it
         buffOut := world.Malloc(xcl.WriteOnly, 4)
         defer buffOut.Free()
 
-/*
-	// Set the arguments to the kernel
-	a := fixed.I26(0)
-	b := fixed.I26(1)
-	
-*/
+
+	// Write into the allocated buffers of inps, acts, weights and bias
+
+	binary.Write(buffActs.Writer(), binary.LittleEndian, actives)
+
 	binary.Write(buffIn.Writer(), binary.LittleEndian, inp)
-	//numBlocks := uint32(inpSize / 64)
+
+	binary.Write(buffWeightH.Writer(), binary.LittleEndian, weightH)
+
+	binary.Write(buffBiasH.Writer(), binary.LittleEndian, biasH)
+
+	binary.Write(buffWeightO.Writer(), binary.LittleEndian, weightO)
+
+	binary.Write(buffBiasO.Writer(), binary.LittleEndian, biasO)
+
 
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, buffIn, buffOut)
+		BenchmarkKernel(world, krnl, B, buffActs, buffIn, buffWeightH, buffBiasH, buffWeightO, buffBiasO, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)
@@ -93,14 +378,13 @@ func main() {
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
-
 	// Compute the expected result 
-	expected := inp[0] ^ inp[1] 
+	expected := [3]fixed.Int26_6{0,1,0}
 
 	// Exit with an error if the value is not correct
-	if expected != ret {
+	if expected[1] != ret {
 		// Print the value we got from the FPGA
-		fmt.Printf("Expected %d, got %d\n", expected, ret)
+		fmt.Printf("Expected %b.0, got 0.%b (in binary)\n", expected[1], ret)
 		os.Exit(1)
 	}
 
