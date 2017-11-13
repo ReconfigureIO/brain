@@ -35,9 +35,22 @@ First off install the base package from GoLearn which is used for data augmentat
 ## Getting Started
 
 ## Examples
-    
+
+/examples dir contains two examples (inference and training) of implementing a neural network using Reconfigure.io's provided `brain` library. Each example is consist of `cmd` and `kernel` parts. It is usually a good practice to think in advance about partitioning your computation and data. In the current examples we have decided to locate data (incl. weight and bias), from training phase, on the host side (`/cmd/main.go`) so that we could apply pre-inference data augmentation, such as re formatting the entires from float to fixed.   
+
+for more information about implementing, simulating, and running kernels please refer to our documentation:
+http://docs.reconfigure.io/
+
+
 ## Docs    
     
 [TODO] a list of Go features that our compiler dosen't support.
+http://docs.reconfigure.io/go_support.html
+
+## References
+
+Daniel Whitenack, "Machine Learning With Go", Packt Publishing, September 2017
+Data Set: Iris flower data set: https://en.wikipedia.org/wiki/Iris_flower_data_set
+
 
 
