@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"xcl"
 	"os"
+	"reflect"
         "testing"
 //	"github.com/reconfigureio/brain/bnn"
 //	"github.com/reconfigureio/brain/utils"
@@ -342,8 +343,8 @@ func main() {
         defer buffActs.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
-        // The output is a int32, so we need 4 bytes to store it
-        buffOut := world.Malloc(xcl.WriteOnly, 4)
+        // The output is a 3-int32 set, so we need 4 * 3 bytes to store it
+        buffOut := world.Malloc(xcl.WriteOnly, 12)
         defer buffOut.Free()
 
 
@@ -373,18 +374,19 @@ func main() {
 	fmt.Printf("%s\n", result.String())
 
 	// Decode that byte slice into the uint32 we're expecting
-	var ret fixed.Int26_6
-	err := binary.Read(buffOut.Reader(), binary.LittleEndian, &ret)
+	//var ret [3]fixed.Int26_6
+        ret := make([]fixed.Int26_6, 3)
+	err := binary.Read(buffOut.Reader(), binary.LittleEndian, ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
 	// Compute the expected result 
-	expected := [3]fixed.Int26_6{0,1,0}
+	expected := make([]fixed.Int26_6, 3)
 
 	// Exit with an error if the value is not correct
-	if expected[1] != ret {
+	if !reflect.DeepEqual(expected,ret) {
 		// Print the value we got from the FPGA
-		fmt.Printf("Expected %b.0, got 0.%b (in binary)\n", expected[1], ret)
+		fmt.Printf("Expected %b, got %b (in binary)\n", expected, ret)
 		os.Exit(1)
 	}
 

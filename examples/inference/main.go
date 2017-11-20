@@ -124,8 +124,11 @@ func Top(
 		layer_out[i] = fixed.Int26_6(aximemory.ReadUInt32(memReadAddr, memReadData, false, addrAct + uintptr(4*(out>>6 + 100))))
 	}
 
-	// Write it back to the pointer the host requests
-	aximemory.WriteUInt32(
-		memWriteAddr, memWriteData, memWriteResp, false, addrOut, uint32(layer_out[1]))
+        for i := 0; i < 2; i++{
+		// Write it back to the pointer the host requests
+		aximemory.WriteUInt32(
+			memWriteAddr, memWriteData, memWriteResp, false, addrOut + uintptr(i*4), uint32(layer_out[i]))
+        }
 
 }
+
