@@ -18,18 +18,18 @@ import (
 //the output accuracy achieved from the model    
 const NUM_EPOCHS int = 100
 const BATCH_SIZE int = 500
+const LENGTH uint = 50
 
-func BenchmarkKernel(world xcl.World, 
+func BenchmarkKernel(world xcl.World,
 		krnl *xcl.Kernel,
-		B *testing.B, 
-		buffActs *xcl.Memory, 
-		buffIn *xcl.Memory, 
+		B *testing.B,
+		buffActs *xcl.Memory,
+		buffIn *xcl.Memory,
 		buffWeightH *xcl.Memory,
 		buffBiasH *xcl.Memory,
 		buffWeightO *xcl.Memory,
 		buffBiasO *xcl.Memory,
 		buffOut *xcl.Memory) {
-
 
 	// Set the pointer to the output buffer
 	krnl.SetMemoryArg(0, buffActs)
@@ -45,7 +45,8 @@ func BenchmarkKernel(world xcl.World,
 	krnl.SetMemoryArg(5, buffBiasO)
 	// Set the pointer to the output buffer
 	krnl.SetMemoryArg(6, buffOut)
-
+        // Pass the total length of the input
+        krnl.SetArg(7, uint32(LENGTH))
 
 	// Reset the timer so that we only measure runtime of the kernel
 	B.ResetTimer()
@@ -72,24 +73,24 @@ func main() {
 
 
 	// Generated table by util/disretise_sig(1)
-  	actives := [200]fixed.Int26_6{host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
-		host.I26Float64(0), 
+ 	actives := [200]fixed.Int26_6{host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
+		host.I26Float64(0),
 		host.I26Float64(0), 
 		host.I26Float64(0), 
 		host.I26Float64(0), 
@@ -274,10 +275,10 @@ func main() {
 		host.I26Float64(1)}
 
 	// Input batch size = 4 - famous iris flower dataset
-	inp := [4]fixed.Int26_6{host.I26Float64(0.583333333),
-		host.I26Float64(0.291666666),
-		host.I26Float64(0.728813559),
-		host.I26Float64(0.75)}
+	inp := [4]fixed.Int26_6{host.I26Float64(0.194444444444 ),
+		host.I26Float64(0.583333333333),
+		host.I26Float64(0.101694915254),
+		host.I26Float64(0.125)}
 
 	// From the training stage of datadan.io network model
 	weightH := [12]fixed.Int26_6{host.I26Float64(-9.664649023),
@@ -319,7 +320,7 @@ func main() {
 
         // Allocate a buffer on the FPGA to store the return value of our computation
         // The input is a 4-uint32 set, so we need 4 * 4 bytes to store it
-        buffIn := world.Malloc(xcl.ReadOnly, 16)
+        buffIn := world.Malloc(xcl.ReadOnly, 16*LENGTH)
         defer buffIn.Free()
 
         // Allocate a buffer on the FPGA to store the return value of our computation
@@ -365,7 +366,8 @@ func main() {
 
 	// Create a function that the benchmarking machinery can call
 	f := func(B *testing.B) {
-		BenchmarkKernel(world, krnl, B, buffActs, buffIn, buffWeightH, buffBiasH, buffWeightO, buffBiasO, buffOut)
+		BenchmarkKernel(
+			world, krnl, B, buffActs, buffIn, buffWeightH, buffBiasH, buffWeightO, buffBiasO, buffOut)
 	}
 	// Benchmark it
 	result := testing.Benchmark(f)
@@ -375,13 +377,14 @@ func main() {
 
 	// Decode that byte slice into the uint32 we're expecting
 	//var ret [3]fixed.Int26_6
-        ret := make([]fixed.Int26_6, 3)
+        ret := make([]fixed.Int26_6, 3*LENGTH)
 	err := binary.Read(buffOut.Reader(), binary.LittleEndian, ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
 	// Compute the expected result 
-	expected := make([]fixed.Int26_6, 3)
+	expected := make([]fixed.Int26_6, 3*LENGTH)
+
 
 	// Exit with an error if the value is not correct
 	if !reflect.DeepEqual(expected,ret) {
