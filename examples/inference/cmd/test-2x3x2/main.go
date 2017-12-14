@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/ReconfigureIO/sdaccel/xcl"
 	"os"
 	"reflect"
 	"testing"
-	"xcl"
 	//	"github.com/reconfigureio/brain/bnn"
 	//	"github.com/reconfigureio/brain/utils"
 	"github.com/reconfigureio/fixed"
