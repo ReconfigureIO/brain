@@ -1,0 +1,9 @@
+package: .
+import:
+- package: github.com/ReconfigureIO/sdaccel
+  subpackages:
+  - xcl
+- package: github.com/reconfigureio/brain
+  subpackages:
+  - bnn
+  - utils
