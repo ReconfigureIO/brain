@@ -1,0 +1,39 @@
+hash: d93f710ed15fd52136894a70879d47cca13dbeec529b592024fc671307a4bbe9
+updated: 2017-12-15T15:35:00.881577765Z
+imports:
+- name: github.com/gonum/blas
+  version: 37e82626499e1df7c54aeaba0959fd6e7e8dc1e4
+  subpackages:
+  - blas64
+  - native
+  - native/internal/math32
+- name: github.com/gonum/floats
+  version: f74b330d45c56584a6ea7a27f5c64ea2900631e9
+- name: github.com/gonum/internal
+  version: e57e4534cf9b3b00ef6c0175f59d8d2d34f60914
+  subpackages:
+  - asm/f32
+  - asm/f64
+- name: github.com/gonum/lapack
+  version: 5ed4b826becd1807e09377508f51756586d1a98c
+  subpackages:
+  - lapack64
+  - native
+- name: github.com/gonum/matrix
+  version: dd6034299e4242c9f0ea36735e6d4264dfcb3f9f
+  subpackages:
+  - mat64
+- name: github.com/reconfigureio/brain
+  version: 9568e6249a53bdc2eb07bdfe75d7c49482f7f255
+  subpackages:
+  - bnn
+  - utils
+- name: github.com/ReconfigureIO/sdaccel
+  version: e93e5713d49cc1354dcd1d35cfaef85ba151e0a3
+  subpackages:
+  - xcl
+- name: github.com/sjwhitworth/golearn
+  version: d2c70d74e05147f0182cba1dcf79d03ff3ec65ed
+  subpackages:
+  - base
+testImports: []

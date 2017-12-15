@@ -1,3 +1,9 @@
+.PHONY: install
+
+install: 
+	cd examples/training && glide install
+	cd examples/inference && glide install
+
 test: test_bnn
 
 test_bnn: datasets/mnist_train.csv datasets/mnist_test.csv
