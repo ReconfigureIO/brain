@@ -16,14 +16,18 @@ limitations under the License.
 package bnn
 
 import (
-	"math"
-	"os"
+	"github.com/ReconfigureIO/fixed"
 )
+
+// FIXME To be set dynamically
+const INP_LAYER_SIZE uint32 = 4
+const HID_LAYER_SIZE uint32 = 3
+const OUT_LAYER_SIZE uint32 = 3
 
 //essentially a link connecting neurons
 type Synapse struct {
 	//weight associated with the synapse
-	Weight float32
+	Weight fixed.Int26_6
 	//no of the input/output neuron
 	In  int
 	Out int
@@ -35,46 +39,47 @@ type Neuron struct {
 	//activation function
 	Activation string
 	//no of inputs and outputs per neuron
-	Inps, Outs []int
+	Inps []int
+	Outs []int
 	//for calculating deltas
-	DeltaTemp float32
+	DeltaTemp fixed.Int26_6
 	//neuron's output
-	OutVal float32
+	OutVal fixed.Int26_6
 }
 
 //TODO extend to support any activation type
-func ActivationFunction(x float64) float64 {
+func ActivationFunction(x fixed.Int26_6) fixed.Int26_6 {
 
-	return math.Max(0, x)
+	if x > 0 {
+		return x
+	} else {
+		return 0
+	}
 }
 
 //inference takes an input image and uses the weights from training
 //FIXME add bias
 //FIXME pass array of layers
-func Inference(weights [][]Synapse, input [][]float32, network [][]Neuron) float32 {
+func Inference(weights [3][3]Synapse, input [3][3]fixed.Int26_6, network [3][3]Neuron) [3]fixed.Int26_6 {
 
-	var output float32
+	var output [OUT_LAYER_SIZE]fixed.Int26_6
 
 	//calculate out values for the first layer (i = 0)
-	for _, layer := range network {
-		for j, neuron := range layer {
-			neuron.OutVal += weights[0][j].Weight * input[0][j]
+	for j := uint32(0); j < HID_LAYER_SIZE; j++ {
+		for i := uint32(0); i < INP_LAYER_SIZE; i++ {
+			network[1][j].OutVal += weights[0][i].Weight * input[0][i]
 		}
 	}
-
 	//use the weights to calculate the output of neurons in hidden layers
-	for i, layer := range network {
-		for j, neuron := range layer {
-			weights[i][j].Weight += weights[i][j].Weight * neuron.OutVal * input[i][j]
+	for j := uint32(0); j < OUT_LAYER_SIZE; j++ {
+		for i := uint32(0); i < HID_LAYER_SIZE; i++ {
+			network[2][j].OutVal += weights[1][i].Weight * network[1][i].OutVal
 		}
 	}
 
 	//use the weights to calculate the output of neurons in final layer (i = last)
-	i := len(network)
-	for _, layer := range network {
-		for j, neuron := range layer {
-			output += weights[i][j].Weight * neuron.OutVal * input[i][j]
-		}
+	for i := uint32(0); i < OUT_LAYER_SIZE; i++ {
+		output[i] = network[2][i].OutVal
 	}
 	return output
 }
@@ -83,9 +88,9 @@ func Inference(weights [][]Synapse, input [][]float32, network [][]Neuron) float
 //compares the output based on the test in the dataset
 //TODO add bias and weight distributions as input
 //TODO pass a pointer to the network
-func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, float32) {
+/*func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, fixed.Int26_6) {
 
-	var accuracy float32
+	var accuracy fixed.Int26_6
 	var weights [][]Synapse
 
 	//TODO initialise weights using a random function
@@ -94,7 +99,7 @@ func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, f
 	for i := len(network); i >= 0; i-- {
 		for j, _ := range network {
 
-			var acc float32 = 0
+			acc := fixed.Int26_6(0)
 			for k, _ := range network {
 				acc += weights[i+1][k].Weight * network[i][j].DeltaTemp
 			}
@@ -110,7 +115,7 @@ func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, f
 	}
 
 	return weights, accuracy
-}
+}*/
 
 //reshapes images based on the resize factors should support:
 //padding, flipping, rotation, transpose, etc.
@@ -118,40 +123,4 @@ func TrainNetwork(image []byte, test []byte, network [][]Neuron) ([][]Synapse, f
 //FIXME implement it as a separate package
 func ReshapeImage(image []byte) []byte {
 	return image
-}
-
-//reads in images located in 'path' and returns an array
-func ReadImage(path string) []byte {
-
-	//open the image file
-	f, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-
-	//get the file status
-	fi, err := f.Stat()
-	if err != nil {
-		panic(err)
-	}
-
-	//create an arraye of size 'image'
-	arr := make([]byte, fi.Size())
-	f.Read(arr)
-
-	f.Close()
-	return arr
-}
-
-//constructs a layer of neurons with arbitrary 'size' and 'activation' functions
-func NetworkLayer(size int, act string) []Neuron {
-
-	layer := make([]Neuron, size)
-
-	//init the array
-	for i, _ := range layer {
-
-		layer[i].Activation = act
-	}
-	return layer
 }
