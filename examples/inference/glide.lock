@@ -1,6 +1,10 @@
-hash: bb44c0a0983eee9dfbd5ff45be2be14f51e045e20581ca6e97a8622e74d61239
-updated: 2017-12-15T15:34:11.161363148Z
+hash: 0dd9017281d308d949e091037278e8a5f3faeb7e077692627a64cd741d69ef73
+updated: 2018-01-31T11:29:55.607224686Z
 imports:
+- name: github.com/ReconfigureIO/brain
+  version: 1d69d962c3c9166b9f9c72094e551b5bd1f46ee6
+  subpackages:
+  - bnn
 - name: github.com/reconfigureio/fixed
   version: 019e8e9cf87a7b55a8a8b78eecbc1d7fede75eec
   subpackages:

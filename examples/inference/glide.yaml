@@ -8,3 +8,4 @@ import:
 - package: github.com/reconfigureio/fixed
   subpackages:
   - host
+- package: github.com/ReconfigureIO/brain
