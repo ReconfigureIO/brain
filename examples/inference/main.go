@@ -16,13 +16,10 @@ limitations under the License.
 package main
 
 import (
-	//	"github.com/reconfigureio/brain/bnn"
-	//	"github.com/reconfigureio/brain/utils"
-	"github.com/reconfigureio/fixed"
-
+	"github.com/ReconfigureIO/brain/bnn"
+	"github.com/ReconfigureIO/fixed"
 	// Import the entire framework (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
-
 	// Use the new AXI protocol package
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
