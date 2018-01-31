@@ -16,17 +16,34 @@ limitations under the License.
 package bnn
 
 import (
-    "testing"
+	"github.com/ReconfigureIO/fixed"
+	"github.com/sjwhitworth/golearn/base"
+	"testing"
 )
 
-func TestReadImage(t *testing.T) {
-	gottenTrain := ReadImage("../datasets/mnist_train.csv")
-	if len(gottenTrain) != 100 {
-		t.Error("Expected 100 got,", len(gottenTrain))
+func load_data(path string) (instance *base.DenseInstances) {
+
+	rawData, err := base.ParseCSVToInstances(path, false)
+	if err != nil {
+		panic(err)
+	}
+	return rawData
+}
+
+func TestInference(t *testing.T) {
+
+	// Prepare data matrices for inferenece
+	_ = load_data("../datasets/mnist_train.csv")
+
+	weights := [4][4]Synapse{}
+	input := [4][4]fixed.Int26_6{}
+	network := [4][4]Neuron{}
+
+	ret := Inference(weights, input, network)
+	expected := [3]fixed.Int26_6{}
+
+	if ret != expected {
+		t.Errorf("Expected %d got %d", expected, ret)
 	}
 
-	gottenTest := ReadImage("../datasets/mnist_test.csv")
-	if len(gottenTest) != 100 {
-		t.Error("Expected 100 got,", len(gottenTest))
-	}
 }

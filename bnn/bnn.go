@@ -60,7 +60,7 @@ func ActivationFunction(x fixed.Int26_6) fixed.Int26_6 {
 //inference takes an input image and uses the weights from training
 //FIXME add bias
 //FIXME pass array of layers
-func Inference(weights [3][3]Synapse, input [3][3]fixed.Int26_6, network [3][3]Neuron) [3]fixed.Int26_6 {
+func Inference(weights [4][4]Synapse, input [4][4]fixed.Int26_6, network [4][4]Neuron) [3]fixed.Int26_6 {
 
 	var output [OUT_LAYER_SIZE]fixed.Int26_6
 

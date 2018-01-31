@@ -38,7 +38,7 @@ func sigmoid(x float64) float64 {
 
 // Discretise sigmoid based on 'z' granularity
 // 'z' = 1 returns a 200 entry table of sigmoid
-func discrete_sigmoid(z int32) {
+/*func discrete_sigmoid(z int32) {
 
     i := float64(0)
     index := 0	
@@ -53,6 +53,5 @@ func discrete_sigmoid(z int32) {
        }
     }
     
-
-}
+}*/
 
