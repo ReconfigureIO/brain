@@ -13,9 +13,6 @@ install:
 - go get -t ../../../sjwhitworth/golearn/base
 - reco version
 
-
 script:
   - make test
-  - make vendor
-  - reco check
   - cd examples/inference/ && reco check
