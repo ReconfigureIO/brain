@@ -15,4 +15,5 @@ install:
 
 script:
   - make test
+  - make vendor
   - cd examples/inference/ && reco check
