@@ -1,5 +1,5 @@
 language: go
-go_import_path: github.com/ReconfigureIO/fixed
+go_import_path: github.com/ReconfigureIO/brain/bnn
 
 matrix:
   include:
@@ -9,11 +9,14 @@ go:
   - 1.9
 
 install:
+- curl https://glide.sh/get | sh
 - curl -LO https://s3.amazonaws.com/reconfigure.io/reco/releases/reco-master-x86_64-linux.zip
 - unzip reco-master-x86_64-linux.zip
 - sudo mv reco /usr/local/bin
+- reco version
 
 script:
   - make test
   - make vendor
   - reco check
+  - cd examples/inference/ && reco check
