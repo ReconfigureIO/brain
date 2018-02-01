@@ -1,8 +1,11 @@
-.PHONY: install
+.PHONY: test vendor install
 
-install: 
+install: vendor  
 	cd examples/training && glide install
 	cd examples/inference && glide install
+
+vendor: examples/training/vendor/github.com/ReconfigureIO/brain/bnn/bnn.go
+        examples/inference/vendor/github.com/ReconfigureIO/brain/bnn/bnn.go
 
 test: test_bnn
 
