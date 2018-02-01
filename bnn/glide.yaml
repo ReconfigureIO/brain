@@ -1,0 +1,6 @@
+package: ""
+import:
+- package: github.com/sjwhitworth/golearn
+  subpackages:
+  - base
+- package: github.com/ReconfigureIO/fixed
