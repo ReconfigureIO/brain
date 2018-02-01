@@ -4,11 +4,14 @@ go_import_path: github.com/ReconfigureIO/brain/bnn
 go:
   - 1.9
 
+
 install:
 - curl -LO https://s3.amazonaws.com/reconfigure.io/reco/releases/reco-master-x86_64-linux.zip
 - unzip reco-master-x86_64-linux.zip
 - sudo mv reco /usr/local/bin
+- go get -t ./github.com/ReconfigureIO/fixed  
 - reco version
+
 
 script:
   - make test
