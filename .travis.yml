@@ -10,6 +10,7 @@ install:
 - unzip reco-master-x86_64-linux.zip
 - sudo mv reco /usr/local/bin
 - go get -t ../../fixed
+- go get -t ../../../sjwhitworth/golearn/base
 - reco version
 
 
