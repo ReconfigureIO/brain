@@ -1,5 +1,6 @@
 language: go
 go_import_path: github.com/ReconfigureIO/brain/bnn
+		github.com/ReconfigureIO/fixed
 
 matrix:
   include:
