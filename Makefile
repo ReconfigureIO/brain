@@ -12,6 +12,7 @@ test: test_bnn
 
 test_bnn: datasets/mnist_train.csv datasets/mnist_test.csv
 	@( go test ./bnn/ )
+	go build ./bnn/bnn.go
 
 goget:
 	@( \
