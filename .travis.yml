@@ -1,5 +1,5 @@
 language: go
-go_import_path: github.com/ReconfigureIO/brain/bnn
+go_import_path: github.com/ReconfigureIO/brain
 
 go:
   - 1.9
@@ -9,8 +9,8 @@ install:
 - curl -LO https://s3.amazonaws.com/reconfigure.io/reco/releases/reco-master-x86_64-linux.zip
 - unzip reco-master-x86_64-linux.zip
 - sudo mv reco /usr/local/bin
-- go get -t ../../fixed
-- go get -t ../../../sjwhitworth/golearn/base
+- go get -t ../fixed
+- go get -t ../../sjwhitworth/golearn/base
 - reco version
 
 script:
