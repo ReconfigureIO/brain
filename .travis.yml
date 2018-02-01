@@ -6,14 +6,17 @@ go:
 
 
 install:
+- curl https://glide.sh/get | sh
 - curl -LO https://s3.amazonaws.com/reconfigure.io/reco/releases/reco-master-x86_64-linux.zip
 - unzip reco-master-x86_64-linux.zip
 - sudo mv reco /usr/local/bin
 - go get -t ../fixed
+- go get -t ./bnn
 - go get -t ../../sjwhitworth/golearn/base
 - reco version
 
 script:
   - make test
+  - make install
   - make vendor
   - cd examples/inference/ && reco check
