@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ReconfigureIO/brain.svg?branch=master)](https://travis-ci.org/ReconfigureIO/brain)
+
 # bnn-fpga
 
 This repo contains Go implementation and corresponding APIs for acceleration of Binarized Neural Network (BNN) on FPGAs.
