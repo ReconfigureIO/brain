@@ -9,3 +9,5 @@ import:
   subpackages:
   - host
 - package: github.com/ReconfigureIO/brain
+  subpackages:
+  - bnn

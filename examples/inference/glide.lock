@@ -1,16 +1,14 @@
-hash: 0dd9017281d308d949e091037278e8a5f3faeb7e077692627a64cd741d69ef73
-updated: 2018-01-31T11:29:55.607224686Z
+hash: d6129ffa3909ccc4c56a41ba76b121cde461cd06b0ce59d814a9e8895f72f1b5
+updated: 2018-02-15T16:57:47.219859354Z
 imports:
 - name: github.com/ReconfigureIO/brain
-  version: 1d69d962c3c9166b9f9c72094e551b5bd1f46ee6
+  version: 1f1204df7e7addedc6319548b6c9aed02fabeff1
   subpackages:
   - bnn
 - name: github.com/reconfigureio/fixed
   version: 019e8e9cf87a7b55a8a8b78eecbc1d7fede75eec
   subpackages:
   - host
-- name: github.com/ReconfigureIO/fixed
-  version: 019e8e9cf87a7b55a8a8b78eecbc1d7fede75eec
 - name: github.com/ReconfigureIO/sdaccel
   version: e93e5713d49cc1354dcd1d35cfaef85ba151e0a3
   subpackages:
