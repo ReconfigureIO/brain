@@ -39,8 +39,8 @@ type Neuron struct {
 	//activation function
 	Activation string
 	//no of inputs and outputs per neuron
-	Inps []int
-	Outs []int
+	Inps [4]int
+	Outs [4]int
 	//for calculating deltas
 	DeltaTemp fixed.Int26_6
 	//neuron's output
