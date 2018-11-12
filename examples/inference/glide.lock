@@ -5,7 +5,7 @@ imports:
   version: 1f1204df7e7addedc6319548b6c9aed02fabeff1
   subpackages:
   - bnn
-- name: github.com/reconfigureio/fixed
+- name: github.com/ReconfigureIO/fixed
   version: 019e8e9cf87a7b55a8a8b78eecbc1d7fede75eec
   subpackages:
   - host

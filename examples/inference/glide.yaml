@@ -5,7 +5,7 @@ import:
   - axi/memory
   - axi/protocol
   - xcl
-- package: github.com/reconfigureio/fixed
+- package: github.com/ReconfigureIO/fixed
   subpackages:
   - host
 - package: github.com/ReconfigureIO/brain

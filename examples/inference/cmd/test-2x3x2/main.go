@@ -7,10 +7,8 @@ import (
 	"os"
 	"reflect"
 	"testing"
-	//	"github.com/reconfigureio/brain/bnn"
-	//	"github.com/reconfigureio/brain/utils"
-	"github.com/reconfigureio/fixed"
-	"github.com/reconfigureio/fixed/host"
+	"github.com/ReconfigureIO/fixed"
+	"github.com/ReconfigureIO/fixed/host"
 )
 
 //Partition example dataset based on BATCH_SIZE
